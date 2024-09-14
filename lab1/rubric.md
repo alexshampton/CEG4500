@@ -1,4 +1,4 @@
-### Lab 1: Creating Three Shapes in 2D
+# Lab 1: Creating Three Shapes in 2D
 
 Write a WebGL application that will display three different 2D shapes on your canvas together, with one color for each shape. The JavaScript libraries you must use are webgl-utils.js, initShaders.js and MV.js from Angel & Shreiner (these are shared in the starter Code.zip file with Module 02 Creating a WebGL Application).
 
@@ -6,7 +6,7 @@ Preparatory Material: Code covered in class in Module 02 Creating a WebGL Applic
 
 Store your HTML and JS code in lab1.html and lab1.js respectively.
 
-# Requirements
+## Requirements
 
 1) Only one of the shapes can have 4 vertices or lesser (i.e. <=4 ), the rest should have more than 4 vertices, i.e. 4+.
 
@@ -36,6 +36,7 @@ FirstName_LastName
 
 Put your name as a comment at the top line of the lab1.js file.
 
+## Rubric
 Scoring Rubric: Total - 10 points
 
 1) Each shape drawn correctly is 2 points. If you do not have an ellipse, you will lose 2 points. If more than one shape has 4 or less vertices (i.e. <=4), you will lose 2 points.
