@@ -25,13 +25,21 @@ The above equations are in the general form. You should make sure that your elli
 5) Submit a single zip file with all your code and your README. Your zip file folder unzipped have the following structure:
 
 FirstName_LastName
+
 ---README.txt
+
 ---Common
+
 ------webgl-utils.js
+
 ------initShaders.js
+
 ------MV.js
+
 ---lab1
+
 ------lab1.js
+
 ------lab1.html
 
 Put your name as a comment at the top line of the lab1.js file.

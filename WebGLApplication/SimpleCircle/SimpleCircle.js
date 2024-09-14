@@ -13,25 +13,26 @@ function drawCircle() {
     var arrayOfPointsForCircle=[];
     
     // Enter array setup code here
-    // Use the implicit form of the circle equation here:
-    // (x-a)^2 + (y-b)^2 = r^2.
+    // Use the parametric form of the circle equation here:
+	// x = r cos(theta) + a
+	// y = r sin(theta) + b
 
     var theta = 0.0;
     var i = 0;
     n = 51;
-    h = 2.0 * Math.PI/n;
+    h = 2.0 * Math.PI / n;
 
     r = 0.3;
     a = 0.5;
-    b = 0.4;
+    b = 0.4; 
+	
+    for ( i = 0; i < n; i++ ) {
+	theta = i * h;
+        var x = r * Math.cos( theta ) + a;
+        var y = r * Math.sin( theta ) + b;
 
-    for (i=0; i < n; i++)
-    {
-        theta = i*h;
-        var x = r * Math.cos(theta) + a;
-        var y = r * Math.sin(theta) + b;
-        var point = vec2(x,y)
-        arrayOfPointsForCircle.push(point)
+        var point = vec2( x,y );
+        arrayOfPointsForCircle.push( point );
     }
     
     var bufferId = gl.createBuffer();
@@ -48,6 +49,7 @@ function drawCircle() {
     gl.enableVertexAttribArray( myPosition );
     
     // Enter draw arrays code here
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, n)
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, n );
+    
 }
 

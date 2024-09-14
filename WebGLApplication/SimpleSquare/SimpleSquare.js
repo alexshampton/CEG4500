@@ -1,4 +1,4 @@
-function drawTriangle() {
+function drawSquare() {
     // Set up the canvas
     var canvas=document.getElementById("gl-canvas");
     var gl=WebGLUtils.setupWebGL(canvas);
@@ -18,13 +18,15 @@ function drawTriangle() {
     var arrayOfPoints = [];
     
     // Enter array set up code here
-    var point0 = vec2( 0.0, 0.0 );
-    var point1 = vec2( 1.0, 0.0 );
-    var point2 = vec2( 0.0, 1.0 );
+    var point0 = vec2( 1.0, 0.0 );
+    var point1 = vec2( 0.0, 0.0 );
+    var point2 = vec2( 1.0, 1.0 );
+    var point3 = vec2( 0.0, 1.0 );
     
     arrayOfPoints.push( point0 );
     arrayOfPoints.push( point1 );
     arrayOfPoints.push( point2 );
+    arrayOfPoints.push( point3 );
     
     // Create a buffer on the graphics card,
     // and send array to the buffer for use
@@ -50,9 +52,9 @@ function drawTriangle() {
     gl.enableVertexAttribArray( myPositionJS );
     
     
-    // Force a draw of the triangle using the
+    // Force a draw of the square using the
     // 'drawArrays()' call
-    gl.drawArrays( gl.LINE_STRIP, 0, 3);
+    gl.drawArrays( gl.TRIANGLE_STRIP, 0, 4 );
     
 }
 
