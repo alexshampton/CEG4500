@@ -18,15 +18,14 @@ function init()
     gl.clear( gl.COLOR_BUFFER_BIT );
 
     // Function calls
-    drawCircle();
-    drawSquare();
-    drawTriangle();
+    drawEllipse();
+    drawShapes();
 }
 
 // draws ellipse
-function drawCircle() 
+function drawEllipse() 
 {
-    var arrayOfPointsForCircle=[];
+    var arrayOfPointsForEllipse=[];
     
     // Variables used for ellipse
     var theta = 0.0;
@@ -45,14 +44,14 @@ function drawCircle()
         var x = c * Math.cos(theta) + a;
         var y = d * Math.sin(theta) + b;
         var point = vec2(x,y)
-        arrayOfPointsForCircle.push(point)
+        arrayOfPointsForEllipse.push(point)
     }
     
     // Creates buffer and buffers the points in the array
     var bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
     gl.bufferData( gl.ARRAY_BUFFER,
-                  flatten(arrayOfPointsForCircle), gl.STATIC_DRAW );
+                  flatten(arrayOfPointsForEllipse), gl.STATIC_DRAW );
     
     // Creates shader from info in html page and uses it
     var myShaderProgram =
@@ -69,28 +68,22 @@ function drawCircle()
     gl.drawArrays(gl.TRIANGLE_FAN, 0, n)
 }
 
-function drawSquare() 
-{
+function drawShapes() 
+{    
+    // shape points that will be used for arrayOfPoints
+    var point = vec2( -0.5, -0.4 );
+    var point0 = vec2( -0.1, 0.0 );
+    var point1 = vec2( -0.1, -0.9 );
+    var point2 = vec2( -0.5, -0.5 );
+    var point3 = vec2( -0.9, -0.9);
+    var point4 = vec2( -0.9, 0.0 );
 
-    var arrayOfPoints = [];
+    // triangle points that will be used for arrayOfPoints
+    var triPoint1 = vec2( 0.1, 0.0 );
+    var triPoint2 = vec2( 0.9, 0.0 );
+    var triPoint3 = vec2( 0.1, -0.9 );
     
-    // points that will be used for arrayOfPoints
-    var point = vec2( -0.5, -0.5 );
-    var point0 = vec2( 0.0, 0.0 );
-    var point1 = vec2( 0.0, -1.0 );
-    var point2 = vec2( -0.5, -0.6 );
-    var point3 = vec2( -1.0, -1.0 );
-    var point4 = vec2( -1.0, 0.0 );
-    
-    // pushes points onto array
-    arrayOfPoints.push( point );
-    arrayOfPoints.push( point0 );
-    arrayOfPoints.push( point1 );
-    arrayOfPoints.push( point2 );
-    arrayOfPoints.push( point3 );
-    arrayOfPoints.push( point4 );
-
-    var numPoints = arrayOfPoints.length
+    var arrayOfPoints = [point, point0, point1, point2, point3, point4, triPoint1, triPoint2, triPoint3];
 
     // Creates buffer and buffers the points in the array
     var bufferId = gl.createBuffer();
@@ -100,7 +93,7 @@ function drawSquare()
     
     // Creates shader from info in html page and uses it
     var myShaderProgram =
-        initShaders( gl,"vertex-shader-square", "fragment-shader-square" );
+        initShaders( gl,"vertex-shader-shapes", "fragment-shader-shapes" );
     gl.useProgram( myShaderProgram );
     
     // Create a pointer that iterates over the
@@ -110,47 +103,6 @@ function drawSquare()
     gl.enableVertexAttribArray( myPositionJS );
     
     // Draws Square using TRIANGLE_FAN
-    gl.drawArrays( gl.TRIANGLE_FAN, 0, numPoints );
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, 6);
+    gl.drawArrays( gl.LINE_LOOP, 6, 3);
 }
-
-function drawTriangle() 
-{
-    var arrayOfPoints = [];
-    
-    // points that will be used for arrayOfPoints
-    var point0 = vec2( 0.0, 0.0 );
-    var point1 = vec2( 1.0, 0.0 );
-    var point2 = vec2( 0.0, -1.0 );
-    
-    // pushes points onto array
-    arrayOfPoints.push( point0 );
-    arrayOfPoints.push( point1 );
-    arrayOfPoints.push( point2 );
-
-    var numPoints = arrayOfPoints.length
-    
-    // Creates buffer and buffers the points in the array
-    var bufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-    gl.bufferData( gl.ARRAY_BUFFER,
-                  flatten(arrayOfPoints), gl.STATIC_DRAW );
-    
-    
-    // Creates shader from info in html page and uses it
-    var myShaderProgram =
-        initShaders( gl,"vertex-shader-triangle", "fragment-shader-triangle" );
-    gl.useProgram( myShaderProgram );
-    
-    
-    // Create a pointer that iterates over the
-    // array of points in the shader code
-    var myPositionJS = gl.getAttribLocation( myShaderProgram, "myPosition" );
-    gl.vertexAttribPointer( myPositionJS, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( myPositionJS );
-    
-    
-    // Draws Triangle using LINE_LOOP
-    gl.drawArrays( gl.LINE_LOOP, 0, numPoints );
-}
-
-
