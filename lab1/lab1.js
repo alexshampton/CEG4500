@@ -71,20 +71,27 @@ function drawCircle()
 
 function drawSquare() 
 {
+
     var arrayOfPoints = [];
     
     // points that will be used for arrayOfPoints
+    var point = vec2( -0.5, -0.5 );
     var point0 = vec2( 0.0, 0.0 );
-    var point1 = vec2( -1.0, 0.0 );
-    var point2 = vec2( -1.0, -1.0 );
-    var point3 = vec2( 0.0, -1.0 );
+    var point1 = vec2( 0.0, -1.0 );
+    var point2 = vec2( -0.5, -0.6 );
+    var point3 = vec2( -1.0, -1.0 );
+    var point4 = vec2( -1.0, 0.0 );
     
     // pushes points onto array
+    arrayOfPoints.push( point );
     arrayOfPoints.push( point0 );
     arrayOfPoints.push( point1 );
     arrayOfPoints.push( point2 );
     arrayOfPoints.push( point3 );
-    
+    arrayOfPoints.push( point4 );
+
+    var numPoints = arrayOfPoints.length
+
     // Creates buffer and buffers the points in the array
     var bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
@@ -103,7 +110,7 @@ function drawSquare()
     gl.enableVertexAttribArray( myPositionJS );
     
     // Draws Square using TRIANGLE_FAN
-    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4 );
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, numPoints );
 }
 
 function drawTriangle() 
@@ -119,6 +126,8 @@ function drawTriangle()
     arrayOfPoints.push( point0 );
     arrayOfPoints.push( point1 );
     arrayOfPoints.push( point2 );
+
+    var numPoints = arrayOfPoints.length
     
     // Creates buffer and buffers the points in the array
     var bufferId = gl.createBuffer();
@@ -141,8 +150,7 @@ function drawTriangle()
     
     
     // Draws Triangle using LINE_LOOP
-    gl.drawArrays( gl.LINE_LOOP, 0, 3 );
-    
+    gl.drawArrays( gl.LINE_LOOP, 0, numPoints );
 }
 
 
