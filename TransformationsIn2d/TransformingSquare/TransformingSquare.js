@@ -86,10 +86,10 @@ function render() {
     // sxJS = sxJS - (.005 * keepRunning);
     // syJS = syJS - (.0025 * keepRunning);
 
-    txJS = txJS + (.005 * keepRunning);
-    tyJS = tyJS - (.0025 * keepRunning);
+    txJS = txJS + (.001 * keepRunning);
+    tyJS = tyJS - (.001 * keepRunning);
 
-    MJS = [1,0, 0.0, 0.0, 0.0, 1.0, 0.0, txJS, tyJS, 1.0];
+    MJS = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, txJS, 0.0, 1.0];
     gl.uniformMatrix3fv( MUniform, false, MJS );
     
 

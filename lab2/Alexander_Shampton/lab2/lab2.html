@@ -6,43 +6,44 @@
             <script type="text/javascript" src="../Common/webgl-utils.js"></script>
             <script type="text/javascript" src="../Common/initShaders.js"></script>
             <script type="text/javascript" src="../Common/MV.js"></script>
-            <script type="text/javascript" src="RotatingSquare.js"></script>
+            <script type="text/javascript" src="lab2.js"></script>
             
             <script type="x-shader/x-vertex" id="vertex-shader-square">
                 attribute vec4 myPosition;
-                uniform float theta; 
-                uniform vec2 mouse;
+                uniform mat3 M;
 
                 void main() 
                 {
+                    vec3 vf, vi;
 
-                    float xi, yi, xf, yf;
-                    xi = myPosition.x;
-                    yi = myPosition.y;
+                    vi[0] = myPosition.x;
+                    vi[1] = myPosition.y;
+                    vi[2] = 1.0;
 
-                    xf = cos(theta)*xi + sin(theta)*yi + mouse.x;
-                    yf = -sin(theta)*xi + cos(theta)*yi + mouse.y;
+                    vf = M * vi;
+                    gl_Position.x = vf.x;
+                    gl_Position.y = vf.y;
 
-                    gl_Position.x = xf;
-                    gl_Position.y = yf;
                     gl_Position.z = 0.0;
                     gl_Position.w = 1.0;
 
-                    //gl_Position = myPosition;
                     gl_PointSize = 1.0;
                 }
                 </script>
             
             <script type="x-shader/x-fragment" id="fragment-shader-square">
                 void main() {
-                    gl_FragColor = vec4( 0.0, 1.0, .0, 1.0 );
+                    gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 );
                 }
             </script>
     </head>
     
-    <body onload="init()">
+    <body onload="init()" onkeydown="moveShapeByKey(event)">
         <canvas width="512" height="512" id="gl-canvas" onclick="moveSquare(event)"></canvas><br/>
-        <button id="stopStartButton" onclick="stopStartAnim()">stopStartButton</button>
+        <button id="increaseAcceleration" onclick="increaseAcceleration()">Increase</button>
+        <button id="decreaseAcceleration" onclick="decreaseAcceleration()">Decrease</button>
+        <button id="startRotate" onclick="startRotate()">StartRotate</button>
+        <button id="stopRotate" onclick="stopRotate()">StopRotate</button>
     </body>
 </html>
 
