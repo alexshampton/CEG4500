@@ -1,17 +1,26 @@
+//Alexander Shampton
+//10/07/2024
+
 var gl;
 var shaderProgramSquare;
-var keepRunning;
+
+//Mouse vars
 var mouseUniform;
 var clipX;
 var clipY;
+
+//Matrix Vars
 var moveX;
 var moveY;
-var xDir;
-var yDir;
 var MJS;
 var MUniform;
+
+//Animation Vars
 var acceleration;
 var theta;
+var keepRunning;
+var xDir;
+var yDir;
 
 function init() {
     // Set up the canvas
@@ -34,6 +43,7 @@ function init() {
     // Force the WebGL context to clear the color buffer
     gl.clear( gl.COLOR_BUFFER_BIT );
     
+    //initializing variables
     keepRunning = 0.0;
     clipX = 0.0;
     clipY = 0.0;
@@ -78,31 +88,33 @@ function setupSquare() {
     gl.enableVertexAttribArray( myPositionAttribute );    
 }
 
+//updates the direction of x/y according to key press
 function moveShapeByKey(event)
 {
     var keyAscii = event.keyCode
-    if (keyAscii==65)
+    if (keyAscii==65) //a
     {
         xDir = -1.0;
         yDir = 0.0;
     }
-    else if (keyAscii==68)
+    else if (keyAscii==68) //d
     {
         xDir = 1.0;
         yDir = 0.0;
     }
-    else if (keyAscii==87)
+    else if (keyAscii==87) //w
     {
         xDir = 0.0;
         yDir = 1.0;
     }
-    else if (keyAscii==83)
+    else if (keyAscii==83) //s
     {
         xDir = 0.0;
         yDir = -1.0;
     }
 }
 
+//Updates mouse coordinates to be used by render function
 function moveSquare(event)
 {
     var canvasX = event.clientX;
@@ -112,6 +124,7 @@ function moveSquare(event)
     clipY = -(2.0*canvasY / 512.0 - 1.0);
 }
 
+//Increase acceleration after button press
 function increaseAcceleration()
 {
     if(acceleration == 0.0)
@@ -125,6 +138,7 @@ function increaseAcceleration()
 
 }
 
+//Decrease acceleration after button press
 function decreaseAcceleration()
 {
     if(acceleration<=0.0)
@@ -137,11 +151,13 @@ function decreaseAcceleration()
     }
 }
 
+//Start rotation after button press
 function startRotate()
 {
     keepRunning = 1.0;
 }
 
+//Stop rotation after button press
 function stopRotate()
 {
     keepRunning = 0.0;
@@ -149,18 +165,18 @@ function stopRotate()
 
 function render()
 {
+    //change coordinates according to acceleration and the direction -/+
     moveX = moveX + (acceleration * xDir);
     moveY = moveY + (acceleration * yDir);
-
-
-    // theta = theta * keepRunning;
     
+    //if the is a click, change the coordinates to the coordinates where clicked
     if(clipX!=0)
     {
         moveX = clipX;
         moveY = clipY;
     }
 
+    //Matrix to be used in the vertex shader
     MJS = [Math.cos(theta), -Math.sin(theta), 0.0, Math.sin(theta), Math.cos(theta), 0.0, moveX, moveY, 1.0];  
 
     gl.uniformMatrix3fv( MUniform, false, MJS );
@@ -168,8 +184,12 @@ function render()
     gl.drawArrays( gl.TRIANGLE_FAN, 0, 6 );
 
     requestAnimationFrame( render );
+
+    //reset clicked coords incease clicked
     clipX = 0.0;
     clipY = 0.0;
+
+    //if the animation button is still clicked increase theta
     if(keepRunning>0)
     {
         theta += 0.01;

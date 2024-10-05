@@ -1,0 +1,5 @@
+CEG4500 Lab 2: Animation and Interactions
+Name: Alexander Shampton
+
+This lab I drew a white shape with 6 verticies. When loading the html page, the shape will move right until user input (Keys: w (up),a (left), s(right), d (down)). Another user input that can be used is a click on the red canvas, which moves the shape to that location pressed on the canvas and will keep its movement speed and rotation (or no rotation). There are also Increase and decrease buttons where they either increase or decrease the shape's movement speed. There are also StartRotate and StopRotate buttons where the shape either rotates or stops rotating when the button is pressed. The StopRotate button will stop the shape and preserve it rotation position.    
+The shape's animations and movement were all computed by manipulating a 3x3 matrix in the javascript file.
