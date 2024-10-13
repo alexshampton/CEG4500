@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+            <title>Project 1</title>
+            <link rel="stylesheet" href="stylesheet.css">
+            <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+            <script type="text/javascript" src="../Common/initShaders.js"></script>
+            <script type="text/javascript" src="../Common/MV.js"></script>
+            <script type="text/javascript" src="project1.js"></script>
+
+            <script id="vertex-shader-sun" type="x-shader/x-vertex">
+
+                attribute vec4 myPosition;
+                
+                void main() {
+                    gl_PointSize = 1.0;
+                    gl_Position = myPosition;
+                }
+
+            </script>
+            
+            <script id="fragment-shader-sun" type="x-shader/x-fragment">
+                
+                void main() {
+                    gl_FragColor = vec4(255.0/255.0,223.0/255.0,34.0/255.0, 1.0 );
+                }
+                
+            </script>
+
+            <script id="vertex-shader-grass" type="x-shader/x-vertex">
+
+                attribute vec4 myPosition;
+                
+                void main() {
+                    gl_PointSize = 1.0;
+                    gl_Position = myPosition;
+                }
+
+            </script>
+            
+            <script id="fragment-shader-grass" type="x-shader/x-fragment">
+                
+                void main() {
+                    gl_FragColor = vec4(65.0/255.0,152.0/255.0,10.0/255.0, 1.0 );
+                }
+                
+            </script>
+
+            <script id="vertex-shader-pipe" type="x-shader/x-vertex">
+
+                attribute vec4 myPosition;
+                uniform mat3 M;
+
+                void main() 
+                {
+                    vec3 vf, vi;
+
+                    vi[0] = myPosition.x;
+                    vi[1] = myPosition.y;
+                    vi[2] = 1.0;
+
+                    vf = M * vi;
+                    gl_Position.x = vf.x;
+                    gl_Position.y = vf.y;
+
+                    gl_Position.z = 0.0;
+                    gl_Position.w = 1.0;
+
+                    gl_PointSize = 1.0;
+                }
+            </script>
+            
+            <script id="fragment-shader-pipe" type="x-shader/x-fragment">
+                
+                void main() {
+                    gl_FragColor = vec4(132.0/255.0, 189.0/255.0, 0, 1.0 );
+                }
+                
+            </script>
+
+            <script type="x-shader/x-vertex" id="vertex-shader-square">
+                attribute vec4 myPosition;
+                uniform mat3 M;
+
+                void main() 
+                {
+                    vec3 vf, vi;
+
+                    vi[0] = myPosition.x;
+                    vi[1] = myPosition.y;
+                    vi[2] = 1.0;
+
+                    vf = M * vi;
+                    gl_Position.x = vf.x;
+                    gl_Position.y = vf.y;
+
+                    gl_Position.z = 0.0;
+                    gl_Position.w = 1.0;
+
+                    gl_PointSize = 1.0;
+                }
+                </script>
+            
+            <script type="x-shader/x-fragment" id="fragment-shader-square">
+                void main() {
+                    gl_FragColor = vec4( 1.0, 1.0, 0.0, 1.0 );
+                }
+            </script>
+    </head>
+    
+    <body onload="init()" onkeydown="moveShapeByKey(event)">
+        <!-- <canvas width="512" height="512" id="gl-canvas" onclick="mouseClick()"></canvas><br/> -->
+        <canvas width="1440" height="770" class="test" id="gl-canvas" onclick="mouseClick()"></canvas><br/>
+        <span class="score" id="score">0</span>
+        <span class="start" id="start">Click Canvas or Press Spacebar to play</span>
+        <span class="gameover" id="gameover"></span>
+    </body>
+</html>
+
