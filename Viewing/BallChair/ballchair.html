@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+    // INSERT CODE HERE
+    // Step 3.2: Lighting Calculations in Vertex Shader
+    precision mediump float;
+    attribute vec4 vertexPosition;
+    
+    // Set up uniforms for modelview, modelview inverse transpose, and projections
+    uniform mat4 modelview;
+    uniform mat4 projection;
+    
+    // Set up a uniform for a flag that decides if the projection is
+    // orthographic or perspective
+    
+    
+    
+    void main() {
+        gl_PointSize = 1.0;
+        
+        // Part 3.2: calculations in main function ---
+        
+        
+        gl_Position = vertexPosition; // change this line to apply the modelview and projection
+        
+    }
+
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+
+    
+    void main() {
+        
+        gl_FragColor = vec4( .8, .8, .8, 1.0 );
+    }
+
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="ballchair.js"></script>
+<script type="text/javascript" src="object.js"></script>
+</head>
+
+<body onload = "initGL()">
+    <canvas id="gl-canvas" height="512" width="512">
+    </canvas>
+</body>
+</html>
