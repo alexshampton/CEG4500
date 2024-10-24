@@ -7,7 +7,7 @@ I created a prism with 5 verticies where each vertex having a different color an
     * Press z to rotate around z-axis
     * Press w to translate on the y-axis
     * Press d to translate on the x-axis
-    * Press a to scale on the y-axis
-    * Press s to scale on the x-axis
+    * Press a to scale on the x-axis
+    * Press s to scale on the y-axis
 
 
