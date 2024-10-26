@@ -1,14 +1,11 @@
 //Alexander Shampton
-//10/25/2024
+//10/30/2024
 
 var gl;
-var shaderProgramSquare;
-var shaderProgramGrass;
-var shaderProgramPipe;
-var shaderProgramSun;
-var squareBuffer;
 
 //Square Vars
+var shaderProgramSquare;
+var squareBuffer;
 var squareYCoord;
 var squareYCoord1;
 var squareYCoord2;
@@ -21,6 +18,9 @@ var MJS;
 var MUniform;
 
 //Pipe Vars
+var shaderProgramPipe;
+var pipe1Buffer;
+var pipe2Buffer;
 var pipeXDir;
 var pipeXCoord;
 var pipeXCoord1;
@@ -29,6 +29,18 @@ var pipeAcceleration;
 var pipeMJS;
 var pipeMUniform;
 var yCoord; 
+
+//Sun Vars
+var sunBuffer;
+var shaderProgramSun;
+
+//Cloud Vars
+var cloudBuffer;
+var shaderProgramCloud;
+
+//grass Vars
+var grassBuffer;
+var shaderProgramGrass;
 
 //Animation Vars
 var gameStart = 0;
@@ -60,6 +72,8 @@ function init() {
                                         "fragment-shader-pipe" );
     shaderProgramSun = initShaders( gl,"vertex-shader-sun",
                                         "fragment-shader-sun" );
+    shaderProgramCloud = initShaders( gl,"vertex-shader-cloud",
+                                        "fragment-shader-cloud" );
     gl.useProgram( shaderProgramSquare );
     
     // Force the WebGL context to clear the color buffer
@@ -99,10 +113,12 @@ function init() {
     gl.uniformMatrix3fv( pipeMUniform, false, pipeMJS );
 
     //Draws square and grass
+    setUpCloud();
     setupSquare();
-    drawSun();
+    setUpSun();
 }
 
+//Sets up square that moves and grass
 function setupSquare() {
     
     //Square points
@@ -122,8 +138,8 @@ function setupSquare() {
 
     gl.useProgram( shaderProgramGrass );
 
-    var bufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+    grass = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, grass );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(grassPoints), gl.STATIC_DRAW );
     
     // Create a pointer that iterates over the
@@ -139,6 +155,48 @@ function setupSquare() {
     gl.useProgram( shaderProgramSquare );
     squareBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, squareBuffer );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(arrayOfPoints), gl.STATIC_DRAW );
+    
+    // Create a pointer that iterates over the
+    // array of points in the shader code
+    var myPositionAttribute = gl.getAttribLocation( shaderProgramSquare, "myPosition" );
+    gl.vertexAttribPointer( myPositionAttribute, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( myPositionAttribute ); 
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4);
+}
+
+//draws square and grass for each call of render
+function drawSquare() {
+    
+    //Square points
+    var p0 = vec2( .025, .05 );
+    var p1 = vec2( .025, -.05);
+    var p2 = vec2( -.025, -.05 );
+    var p3 = vec2( -.025, .05 );
+
+    //Grass points
+    var grass1 = vec2( 1.0, -.65);
+    var grass2 = vec2( 1.0, -1.0 );
+    var grass3 = vec2( -1.0, -1.0 );
+    var grass4 = vec2( -1.0, -.65  );
+
+    var arrayOfPoints = [p0, p1, p2, p3];
+    var grassPoints = [grass1,grass2,grass3,grass4];
+
+    gl.useProgram( shaderProgramGrass );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(grassPoints), gl.STATIC_DRAW );
+    
+    // Create a pointer that iterates over the
+    // array of points in the shader code
+    myPositionAttribute = gl.getAttribLocation( shaderProgramGrass, "myPosition" );
+    gl.vertexAttribPointer( myPositionAttribute, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( myPositionAttribute ); 
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4);
+
+    // Create a buffer on the graphics card,
+    // and send array to the buffer for use
+    // in the shaders
+    gl.useProgram( shaderProgramSquare );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(arrayOfPoints), gl.STATIC_DRAW );
     
     // Create a pointer that iterates over the
@@ -169,8 +227,8 @@ function setupPipes() {
 
     gl.useProgram( shaderProgramPipe );
 
-    var bufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+    pipe1Buffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, pipe1Buffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(pipe1Points), gl.STATIC_DRAW );
     
     // Create a pointer that iterates over the
@@ -182,8 +240,8 @@ function setupPipes() {
 
     gl.useProgram( shaderProgramPipe);
 
-    bufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+    pipe2Buffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, pipe2Buffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(pipe2Points), gl.STATIC_DRAW );
     
     // Create a pointer that iterates over the
@@ -194,16 +252,49 @@ function setupPipes() {
     gl.drawArrays( gl.TRIANGLE_FAN, 0, 4);
 }
 
-// draws sun
-function drawSun() 
+//Creates 2 pipes
+function drawPipes() {
+
+    // Pipe 1 points
+    var pipe1_1 = vec2( 1.0, -1.0);
+    var pipe1_2 = vec2( 1.0, yCoord );
+    var pipe1_3 = vec2( 0.9, yCoord );
+    var pipe1_4 = vec2(0.9, -1.0);
+
+    // Pipe 2 points (uses yCoord + 0.4 to be ontop of pipe 1)
+    var pipe2_1 = vec2( 1.0, 1.0);
+    var pipe2_2 = vec2( 1.0, yCoord + 0.4);
+    var pipe2_3 = vec2( 0.9, yCoord + 0.4);
+    var pipe2_4 = vec2(0.9, 1.0);
+
+    var pipe1Points = [pipe1_1, pipe1_2, pipe1_3, pipe1_4];
+    var pipe2Points = [pipe2_1, pipe2_2, pipe2_3, pipe2_4];
+
+    gl.useProgram( shaderProgramPipe );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(pipe1Points), gl.STATIC_DRAW );
+    
+    // Create a pointer that iterates over the
+    // array of points in the shader code
+    var myPositionAttribute = gl.getAttribLocation( shaderProgramGrass, "myPosition" );
+    gl.vertexAttribPointer( myPositionAttribute, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( myPositionAttribute ); 
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4);
+
+    gl.useProgram( shaderProgramPipe);
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(pipe2Points), gl.STATIC_DRAW );
+    
+    // Create a pointer that iterates over the
+    // array of points in the shader code
+    myPositionAttribute = gl.getAttribLocation( shaderProgramGrass, "myPosition" );
+    gl.vertexAttribPointer( myPositionAttribute, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( myPositionAttribute ); 
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4);
+}
+
+//setsup sun initally
+function setUpSun() 
 {
     var arrayOfPointsForCircle=[];
-    
-    // Enter array setup code here
-    // Use the parametric form of the circle equation here:
-	// x = r cos(theta) + a
-	// y = r sin(theta) + b
-
     var theta = 0.0;
     var i = 0;
     var n = 51;
@@ -224,8 +315,8 @@ function drawSun()
     
     gl.useProgram( shaderProgramSun);
 
-    bufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+    sunBuffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, sunBuffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(arrayOfPointsForCircle), gl.STATIC_DRAW );
     
     // Create a pointer that iterates over the
@@ -234,6 +325,121 @@ function drawSun()
     gl.vertexAttribPointer( myPositionAttribute, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( myPositionAttribute ); 
     gl.drawArrays( gl.TRIANGLE_FAN, 0, n);
+}
+
+// draws sun each time called by render
+function drawSun() 
+{
+    var arrayOfPointsForCircle=[];
+    var theta = 0.0;
+    var i = 0;
+    var n = 51;
+    var h = 2.0 * Math.PI / n;
+
+    var r = 0.3;
+    var a = -1.0;
+    var b = 1.05; 
+	
+    for ( i = 0; i < n; i++ ) {
+	    theta = i * h;
+        var x = r * Math.cos( theta ) + a;
+        var y = r * Math.sin( theta ) + b;
+
+        var point = vec2( x,y );
+        arrayOfPointsForCircle.push( point );
+    }
+    
+    gl.useProgram( shaderProgramSun);
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(arrayOfPointsForCircle), gl.STATIC_DRAW );
+    
+    // Create a pointer that iterates over the
+    // array of points in the shader code
+    myPositionAttribute = gl.getAttribLocation( shaderProgramSun, "myPosition" );
+    gl.vertexAttribPointer( myPositionAttribute, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( myPositionAttribute ); 
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, n);
+}
+
+//initially sets up cloud and its buffer
+function setUpCloud() {
+    var arrayOfPointsForCloud = [];
+    var n = 500;  // Number of points for each circle
+    var numCircles = 3;  // Number of circles for the cloud shape
+    var radiusVariation = 0.01;  // Radius variation for randomness
+    var circleRadius = 0.45;  // Base radius for circles
+    var offsets = [
+        { x: -0.6, y: -0.74 },
+        { x: 0.0, y: -0.5 },
+        { x: 0.6, y: -0.75 }
+    ];  // Offsets to position circles relative to the center
+    
+    // Generate points for each circle to form a cloud
+    for (var j = 0; j < numCircles; j++) {
+        var offsetX = offsets[j].x;
+        var offsetY = offsets[j].y;
+        
+        for (var i = 0; i < n; i++) {
+            var theta = (i * 2 * Math.PI) / n;
+            var r = circleRadius + 0.5 * radiusVariation;  // Adding randomness to radius
+            var x = r * Math.cos(theta) + offsetX;
+            var y = r * Math.sin(theta) + offsetY;
+            var point = vec2(x, y);
+            arrayOfPointsForCloud.push(point);
+        }
+    }
+    
+    // Create and bind buffer, and render
+    gl.useProgram(shaderProgramCloud);
+    cloudBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, cloudBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForCloud), gl.STATIC_DRAW);
+
+    var myPositionAttribute = gl.getAttribLocation(shaderProgramCloud, "myPosition");
+    gl.vertexAttribPointer(myPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(myPositionAttribute);
+
+    // Drawing points as a TRIANGLE_FAN to make cloud puffs
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, arrayOfPointsForCloud.length);
+}
+
+//Draws cloud for each call
+function drawCloud() {
+    var arrayOfPointsForCloud = [];
+    var n = 500;  // Number of points for each circle
+    var numCircles = 3;  // Number of circles for the cloud shape
+    var radiusVariation = 0.01;  // Radius variation for randomness
+    var circleRadius = 0.45;  // Base radius for circles
+    var offsets = [
+        { x: -0.6, y: -0.74 },
+        { x: 0.0, y: -0.5 },
+        { x: 0.6, y: -0.75 }
+    ];  // Offsets to position circles relative to the center
+    
+    // Generate points for each circle to form a cloud
+    for (var j = 0; j < numCircles; j++) {
+        var offsetX = offsets[j].x;
+        var offsetY = offsets[j].y;
+        
+        for (var i = 0; i < n; i++) {
+            var theta = (i * 2 * Math.PI) / n;
+            var r = circleRadius + 0.5 * radiusVariation;  // Adding randomness to radius
+            var x = r * Math.cos(theta) + offsetX;
+            var y = r * Math.sin(theta) + offsetY;
+            var point = vec2(x, y);
+            arrayOfPointsForCloud.push(point);
+        }
+    }
+    
+    // Create and bind buffer, and render
+    gl.useProgram(shaderProgramCloud);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForCloud), gl.STATIC_DRAW);
+
+    var myPositionAttribute = gl.getAttribLocation(shaderProgramCloud, "myPosition");
+    gl.vertexAttribPointer(myPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(myPositionAttribute);
+
+    // Drawing points as a TRIANGLE_FAN to make cloud puffs
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, arrayOfPointsForCloud.length);
 }
 
 //Moves square up when spacebar is pressed
@@ -371,8 +577,9 @@ function render()
 
         //Redraw shapes
         drawSun();
-        setupPipes();
-        setupSquare();
+        drawCloud();
+        drawPipes();
+        drawSquare();
         requestAnimationFrame( render );
     }
 
@@ -421,8 +628,9 @@ function render()
 
         //Redraw shapes
         drawSun();
-        setupPipes();
-        setupSquare();
+        drawCloud();
+        drawPipes();
+        drawSquare();
         requestAnimationFrame( render );
     }
 }
