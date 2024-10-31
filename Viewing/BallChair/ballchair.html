@@ -23,8 +23,9 @@
         
         // Part 3.2: calculations in main function ---
         
-        
-        gl_Position = vertexPosition; // change this line to apply the modelview and projection
+        // change this line to apply the modelview and projection
+        gl_Position = projection * modelview * vertexPosition; 
+        //gl_Position = vertexPosition;
         
     }
 

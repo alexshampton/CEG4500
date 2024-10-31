@@ -36,7 +36,7 @@ function initGL(){
     gl.vertexAttribPointer( vertexPosition, 4, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vertexPosition );
     
-    console.log(vertexPosition);
+    //console.log(vertexPosition);
     
     // WORK ON THIS LAB IN TWO ITERATIONS
     // In the first iteration, do Steps 1 and 2 (i.e., do the Viewing portion)
@@ -55,42 +55,118 @@ function initGL(){
     // Step 1: Position the camera using the look at method
     
     // Define eye (use vec3 in MV.js)
+    var eye = vec3( 0.0, 80.0, 120.0 );
     
     // Define at point (use vec3 in MV.js)
+    var at = vec3( 0.0, 0.0, 0.0 );
     
     // Define vup vector (use vec3 in MV.js)
+    var vup = vec3( 0.0, 1.0, 0.0 );
     
     // Obtain n (use subtract and normalize in MV.js)
+    //var d = subtract( eye,at );
+    var d1 = eye[2] - at[2];
+    var d = vec3( eye[0]-at[0], eye[1]-at[1], eye[2]-at[2] );
+    var n = normalize( d ); 
+    console.log( vup );
+    console.log( n );
     
     // Obtain u (use cross and normalize in MV.js)
+    var k = cross( vup, n );
+    var u = normalize( k );
     
     // Obtain v (use cross and normalize in MV.js)
+    var l = cross( n, u );
+    var v = normalize( l );
     
-    // Set up Model-View matrix M and send M as uniform to shader
+    //console.log( d );
+    //console.log( n );
+    //console.log( k );
+    console.log( u );
+    //console.log( l );
+    console.log( v );
+    
 
+    // Set up Model-View matrix M and send M as uniform to shader
+    var M = [ u[0], 
+        v[0], 
+        n[0], 
+        0.0, 
+        u[1], 
+        v[1], 
+        n[1], 
+        0.0, 
+        u[2], 
+        v[2], 
+        n[2], 
+        0.0,
+        -dot( eye, u ), 
+        -dot( eye, v ), 
+        -dot( eye, n ), 
+        1.0];
+    gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "modelview"), false, M );
      
     // Step 2: Set up orthographic and perspective projections
     
     // Define left plane
+    var leftPlane = -50.0;
     
     // Define right plane
+    var rightPlane = 50.0;
     
     // Define top plane
+    var topPlane = 50.0;
     
     // Define bottom plane
+    var bottomPlane = -50.0;
     
     // Define near plane
+    var nearPlane = 144.22 - 50.0;
     
     // Define far plane
+    var farPlane = 144.22 + 50.0;
     
     // Set up orthographic projection matrix P_orth using above planes
     
     // Set up perspective projection matrix P_persp using above planes
+    var P_persp = [2.0*nearPlane/(rightPlane-leftPlane),
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2*nearPlane/(topPlane-bottomPlane),
+        0.0,
+        0.0,
+        (rightPlane+leftPlane)/(rightPlane-leftPlane),
+        (topPlane+bottomPlane)/(topPlane-bottomPlane),
+        -(farPlane+nearPlane)/(farPlane-nearPlane),
+        -1.0,
+        0.0,
+        0.0,
+        -2.0*farPlane*nearPlane/(farPlane-nearPlane),
+        0.0];
     
     // Use a flag to determine which matrix to send as uniform to shader
     // flag value should be changed by a button that switches between
     // orthographic and perspective projections
     
+    P_orth = [2.0/(rightPlane-leftPlane),
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2/(topPlane-bottomPlane),
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.0/(farPlane-nearPlane),
+        0.0,
+        (rightPlane+leftPlane)/(rightPlane-leftPlane),
+        (topPlane+bottomPlane)/(topPlane-bottomPlane),
+        -(farPlane+nearPlane)/(farPlane-nearPlane),
+        1.0];
+    gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "projection"), false, P_persp );
     
     
     // render the object
