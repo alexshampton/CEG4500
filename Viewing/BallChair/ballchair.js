@@ -169,6 +169,7 @@ function initGL(){
     gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "projection"), false, P_persp );
     
     
+    
     // render the object
     drawObject();
 
