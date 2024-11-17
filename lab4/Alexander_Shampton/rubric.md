@@ -33,6 +33,7 @@ As a hint: when setting up your camera with the look at method, it is easier to 
 Submit a single zip file with all your code and your README. Your zip file folder unzipped have the following structure:
 
 FirstName_LastName
+
 ---README.ext
 
 ---Common

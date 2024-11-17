@@ -26,7 +26,7 @@ function initGL(){
     var faceNormals = getFaceNormals( vertices, indexList, numTriangles );
     var vertexNormals = getVertexNormals( vertices, indexList, faceNormals, numVertices, numTriangles );
 
-    
+
     var indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexList), gl.STATIC_DRAW);
@@ -202,13 +202,13 @@ function initGL(){
     gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ks"), 1.0, 1.0, 1.0 );
 
 
-    gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Ia"), 0.2, 0.2, 0.28 );
-    gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Id"), 0.8, 0.8, 0.8 );
+    gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Ia"), 0.2, 0.2, 0.2 );
+    gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Id"), 1.0, 1.0, 1.0 );
     gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Is"), 0.8, 0.8, 0.8 );
     
     gl.uniform3f( gl.getUniformLocation( myShaderProgram, "p0"), 0.0, 0.0, 0.0 );
+    
     gl.uniform1f( gl.getUniformLocation( myShaderProgram, "alpha"), 10.0 );
-
     
     // render the object
     drawObject();
