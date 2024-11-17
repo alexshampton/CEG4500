@@ -4,7 +4,7 @@ var gl;
 var numVertices;
 var numTriangles;
 var projFlag;
-var light1Flag = 0;
+var light1Flag = 1;
 var light2Flag = 1;
 var specularFlag = 0;
 var alpha = 0;
