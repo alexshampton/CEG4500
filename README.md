@@ -4,3 +4,4 @@
 * Lab 3: 3D Transformations
 * Lab 4: Viewing and Lighting an Unknown Object
 * Project 1: Creating a 2D Game
+* Project 2: Viewing and Lighting a 3D Interactive Scene
