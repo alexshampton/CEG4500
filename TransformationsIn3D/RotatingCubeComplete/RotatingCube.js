@@ -35,41 +35,120 @@ function init() {
 function setupCube() {
     
     // Vertices of Cube
-    var vertices = [vec4( -.2,  .2,  -.2,  1), // p0
-                    vec4( -.2, -.2,  -.2,  1), // p1
-                    vec4(  .2, -.2,  -.2,  1), // p2
-                    vec4(  .2,  .2,  -.2,  1), // p3
-                    vec4(  .2,  .2,  .2,  1), // p4
-                    vec4( -.2,  .2,  .2,  1), // p5
-                    vec4( -.2, -.2,  .2,  1), // p6
-                    vec4(  .2, -.2,  .2,  1)];  // p7
+    var vertices = [
+        // Cube vertices
+        vec4( -.3,  .6,  -.3,  1), // p0
+        vec4( -.3, .1,  -.3,  1), // p1
+        vec4(  .3, .1,  -.3,  1), // p2
+        vec4(  .3,  .6,  -.3,  1), // p3
+        vec4(  .3,  .6,  .3,  1), // p4
+        vec4( -.3,  .6,  .3,  1), // p5
+        vec4( -.3, .1,  .3,  1), // p6
+        vec4(  .3, .1,  .3,  1), // p7
+        vec4( .3,  1.0,  .3,  1), // p8
+        vec4(  -.3,  1.0,  .3,  1), // p9
+    
+        // Table vertices
+        vec4( -.5,  .4,  -.5,  1), // p10
+        vec4( -.5,  .1,  -.5,  1), // p11
+        vec4(  .5,  .1,  -.5,  1), // p12
+        vec4(  .5,  .4,  -.5,  1), // p13
+        vec4(  .5,  .4,  .5,  1), // p14
+        vec4( -.5,  .4,  .5,  1), // p15
+        vec4( -.5,  .1,  .5,  1), // p16
+        vec4(  .5,  .1,  .5,  1), // p17
+        vec4( -.45, .1, -.45, 1), // p18
+        vec4( -.45, -.4, -.45, 1), // p19
+        vec4( -.4, -.4, -.4, 1), // p20
+        vec4( -.4, .1, -.4, 1), // p21
+        vec4( .45, .1, -.45, 1), // p22
+        vec4( .45, -.4, -.45, 1), // p23
+        vec4( .4, -.4, -.4, 1), // p24
+        vec4( .4, .1, -.4, 1), // p25
+        vec4( -.45, .1, .45, 1), // p26
+        vec4( -.45, -.4, .45, 1), // p27
+        vec4( -.4, -.4, .4, 1), // p28
+        vec4( -.4, .1, .4, 1), // p29
+        vec4( .45, .1, .45, 1), // p30
+        vec4( .45, -.4, .45, 1), // p31
+        vec4( .4, -.4, .4, 1), // p32
+        vec4( .4, .1, .4, 1) // p33
+    ];
+// // Colors at Vertices of Cube
+var vertexColors =  [
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0), // brown
+    vec4(0.6, 0.3, 0.0, 1.0) // brown
+];
 
-    // Colors at Vertices of Cube
-    var vertexColors = [vec4( 0.0, 0.0, 1.0, 1.0), // p0
-                        vec4( 0.0, 1.0, 0.0, 1.0), // p1
-                        vec4( 1.0, 0.0, 0.0, 1.0), // p2
-                        vec4( 1.0, 1.0, 0.0, 1.0), // p3
-                        vec4( 1.0, 0.0, 1.0, 1.0), // p4
-                        vec4( 0.0, 1.0, 1.0, 1.0), // p5
-                        vec4( 1.0, 1.0, 1.0, 1.0), // p6
-                        vec4( 0.3, 0.3, 0.3, 1.0)]; // p7
 
-    // Every face on the cube is divided into two triangles,
+    //Every face on the cube is divided into two triangles,
     // each triangle is described by three indices into
     // the array "vertices"
-    var indexList = [0, 1, 3,
-                     1, 2, 3,
-                     6, 5, 7,
-                     4, 7, 5,
-                     0, 6, 1,
-                     5, 6, 0,
-                     2, 4, 3,
-                     2, 7, 4,
-                     0, 4, 5,
-                     0, 3, 4,
-                     2, 1, 6,
-                     2, 6, 7];
+    var indexList  = [
+        // Cube
+        0, 1, 3,
+        1, 2, 3,
+        6, 5, 7,
+        4, 7, 5,
+        0, 6, 1,
+        5, 6, 0,
+        2, 4, 3,
+        2, 7, 4,
+        0, 4, 5,
+        0, 3, 4,
+        2, 1, 6,
+        2, 6, 7,
+        5, 9, 4,
+        8, 4, 9,
     
+        // Table top
+        10, 11, 12, 10, 12, 13,
+        13, 12, 17, 13, 17, 14,
+        14, 17, 16, 14, 16, 15,
+        15, 16, 11, 15, 11, 10,
+        10, 13, 14, 10, 14, 15,
+        12, 11, 16, 12, 16, 17,
+    
+        // Legs
+        18, 19, 20, 18, 20, 21,
+        22, 23, 24, 22, 24, 25,
+        26, 27, 28, 26, 28, 29,
+        30, 31, 32, 30, 32, 33
+    ];
+
+    console.log((indexList.length));
     // Code here to handle putting above lists into buffers
     var vertexBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, vertexBuffer );
@@ -97,7 +176,7 @@ function render() {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
     
     // will populate to render the cube
-    gl.drawElements( gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0 );
+    gl.drawElements( gl.TRIANGLES, 102, gl.UNSIGNED_SHORT, 0 );
 }
 
 function rotateAroundX() {

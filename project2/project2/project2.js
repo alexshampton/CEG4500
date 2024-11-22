@@ -22,8 +22,34 @@ function initGL(){
     var myShaderProgram = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( myShaderProgram );
 
-    vertices = getVertices(); // currently defined in object.js
-    indexList = getFaces();
+    vertices = [
+        vec4( -.3,  .6,  -.3,  1), // p0
+        vec4( -.3, .1,  -.3,  1), // p1
+        vec4(  .3, .1,  -.3,  1), // p2
+        vec4(  .3,  .6,  -.3,  1), // p3
+        vec4(  .3,  .6,  .3,  1), // p4
+        vec4( -.3,  .6,  .3,  1), // p5
+        vec4( -.3, .1,  .3,  1), // p6
+        vec4(  .3, .1,  .3,  1), // p7
+        // Additional vertices for the backrest
+        vec4( .3,  1.0,  .3,  1), // p8
+        vec4(  -.3,  1.0,  .3,  1), // p9
+    ];
+
+    indexList = [0, 1, 3,
+                1, 2, 3,
+                6, 5, 7,
+                4, 7, 5,
+                0, 6, 1,
+                5, 6, 0,
+                2, 4, 3,
+                2, 7, 4,
+                0, 4, 5,
+                0, 3, 4,
+                2, 1, 6,
+                2, 6, 7,
+                5, 9, 4,
+                8, 4, 9];
     numVertices = vertices.length;
     numTriangles = indexList.length/3;
 
@@ -51,7 +77,7 @@ function initGL(){
     gl.enableVertexAttribArray( vertexNormal );
 
     var eye = vec3( 0.0, 0.1, -100);
-    var at = vec3(0.0,0.0,0.0);
+    var at = vec3(0.0 ,1.0, 0.0);
     var vup = vec3( 0.0, 0.1, 0.0 );
     
     // Obtain n (use subtract and normalize in MV.js)
@@ -108,16 +134,16 @@ function initGL(){
     // Step 2: Set up orthographic and perspective projections
     
     // Define left plane
-    var leftPlane = -3;
+    var leftPlane = -1.5;
     
     // Define right plane
-    var rightPlane = 3;
+    var rightPlane = 1.5;
     
     // Define top plane
-    var topPlane = 3;
+    var topPlane = 1.5;
     
     // Define bottom plane
-    var bottomPlane = -3;
+    var bottomPlane = -1.5;
     
     // Define near plane
     var distance = Math.sqrt(((eye[0]-at[0]) ** 2) + ((eye[1]-at[1]) ** 2) + ((eye[2]-at[2]) ** 2));
@@ -145,31 +171,7 @@ function initGL(){
         -2.0*farPlane*nearPlane/(farPlane-nearPlane),
         0.0];
     
-    P_orth = [2.0/(rightPlane-leftPlane),
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        2/(topPlane-bottomPlane),
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        -2.0/(farPlane-nearPlane),
-        0.0,
-        (rightPlane+leftPlane)/(rightPlane-leftPlane),
-        (topPlane+bottomPlane)/(topPlane-bottomPlane),
-        -(farPlane+nearPlane)/(farPlane-nearPlane),
-        1.0];
-
-    if (projFlag == "orth")
-    {
-        gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "projection"), false, P_orth );
-    }
-    else
-    {
-        gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "projection"), false, P_persp );
-    }
+    gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "projection"), false, P_persp );
 
     if (light1Flag == 1)
     {
