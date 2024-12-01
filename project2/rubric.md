@@ -4,9 +4,6 @@ For Project 2 you are required to create an interactive 3D scene with 3D graphic
 
 [Note: A game is not necessary. You are welcome to create a game if you like, as long as all of the requirements discussed are incorporated into the game.]
 
-
-To work with this lab, make sure you download the following files into a single directory: lab4.html, lab4.js, and object.js. Include the Common folder one level above. Load the file ‘lab4.html’ in your browser. You should see a light gray canvas. Here’s why: there is a big light gray object sitting right on top of the camera. The code in lab4.html and lab4.js does draw the object, but because it sits on top of the camera, you cannot see the object itself (imagine a big cave enclosing you, then you would  not really see the outside of the cave. At the moment, the object is kind of like that cave).
-
 ## Requirements for interactive scene
 1) The project must model a realistic scene. Examples of scenes: a dining table with chairs and dinnerware, an office desk with a computer and clutter, a room with furniture. This is a chance for you folks to exhibit your creativity and design ideas, so feel free to explore!
 2) The project should have at least 4 polyhedra. Think creatively: you have chairs that can take 6 polyhedra, you have chairs that may take just three. 

@@ -6,8 +6,17 @@ var numTriangles;
 var projFlag;
 var light1Flag = 1;
 var light2Flag = 1;
-var specularFlag = 0;
-var alpha = 0;
+var specularFlag = 1;
+var chairIndexList;
+var tableIndexList;
+
+var alpha = 0.0;
+var beta = 0.0;
+var gamma = 0.0;
+var tx = 0.0;
+var ty = 0.0;
+var sx = 1.0;
+var sy = 1.0;
 
 function initGL(){
     var canvas = document.getElementById( "gl-canvas" );
@@ -18,43 +27,121 @@ function initGL(){
     gl.enable(gl.DEPTH_TEST);
     gl.viewport( 0, 0, 512, 512 );
     gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-    
-    var myShaderProgram = initShaders( gl, "vertex-shader", "fragment-shader" );
-    gl.useProgram( myShaderProgram );
 
-    vertices = [
-        vec4( -.3,  .6,  -.3,  1), // p0
-        vec4( -.3, .1,  -.3,  1), // p1
-        vec4(  .3, .1,  -.3,  1), // p2
-        vec4(  .3,  .6,  -.3,  1), // p3
-        vec4(  .3,  .6,  .3,  1), // p4
-        vec4( -.3,  .6,  .3,  1), // p5
-        vec4( -.3, .1,  .3,  1), // p6
-        vec4(  .3, .1,  .3,  1), // p7
-        // Additional vertices for the backrest
-        vec4( .3,  1.0,  .3,  1), // p8
-        vec4(  -.3,  1.0,  .3,  1), // p9
+    var chairVerticies = [
+        // Chair verticies
+        vec4(.6,  .45,  -.3,  1), // p0
+        vec4(.6, .0,  -.3,  1), // p1
+        vec4(1.2, .0,  -.3,  1), // p2
+        vec4(1.2,  .45,  -.3,  1), // p3
+        vec4(1.2,  .45,  .3,  1), // p4
+        vec4(.6,  .45,  .3,  1), // p5
+        vec4(.6, .0,  .3,  1), // p6
+        vec4(1.2, .0,  .3,  1), // p7
+        vec4(1.2,  1.0,  -.3,  1), // p8
+        vec4(1.2,  1.0,  .3,  1), // p9
     ];
 
-    indexList = [0, 1, 3,
-                1, 2, 3,
-                6, 5, 7,
-                4, 7, 5,
-                0, 6, 1,
-                5, 6, 0,
-                2, 4, 3,
-                2, 7, 4,
-                0, 4, 5,
-                0, 3, 4,
-                2, 1, 6,
-                2, 6, 7,
-                5, 9, 4,
-                8, 4, 9];
-    numVertices = vertices.length;
+    //Every face on the cube is divided into two triangles,
+    // each triangle is described by three indices into
+    // the array "verticies"
+    chairIndexList  = [
+        // Chair
+        0, 1, 3,
+        1, 2, 3,
+        6, 5, 7,
+        4, 7, 5,
+        0, 6, 1,
+        5, 6, 0,
+        2, 4, 3,
+        2, 7, 4,
+        0, 4, 5,
+        0, 3, 4,
+        2, 1, 6,
+        2, 6, 7,
+        8, 3, 9,
+        3, 4, 9
+    ];
+
+    var tableVerticies = [
+    
+        // Table Verticies
+        vec4( -.5,  .8,  -.5,  1), // p10
+        vec4( -.5,  .5,  -.5,  1), // p11
+        vec4(  .5,  .5,  -.5,  1), // p12
+        vec4(  .5,  .8,  -.5,  1), // p13
+        vec4(  .5,  .8,  .5,  1), // p14
+        vec4( -.5,  .8,  .5,  1), // p15
+        vec4( -.5,  .5,  .5,  1), // p16
+        vec4(  .5,  .5,  .5,  1), // p17
+        vec4( -.45, .5, -.45, 1), // p18
+        vec4( -.45, .0, -.45, 1), // p19
+        vec4( -.4, .0, -.4, 1), // p20
+        vec4( -.4, .5, -.4, 1), // p21
+        vec4( .45, .5, -.45, 1), // p22
+        vec4( .45, -.0, -.45, 1), // p23
+        vec4( .4, -.0, -.4, 1), // p24
+        vec4( .4, .5, -.4, 1), // p25
+        vec4( -.45, .5, .45, 1), // p26
+        vec4( -.45, -.0, .45, 1), // p27
+        vec4( -.4, -.0, .4, 1), // p28
+        vec4( -.4, .5, .4, 1), // p29
+        vec4( .45, .5, .45, 1), // p30
+        vec4( .45, -.0, .45, 1), // p31
+        vec4( .4, -.0, .4, 1), // p32
+        vec4( .4, .5, .4, 1) // p33
+
+    ];
+
+    //Every face on the cube is divided into two triangles,
+    // each triangle is described by three indices into
+    // the array "verticies"
+    tableIndexList  = [
+
+        // Table top
+        0, 1, 2, 0, 2, 3,
+        3, 2, 7, 3, 7, 4,
+        4, 7, 6, 4, 6, 5,
+        5, 6, 1, 5, 1, 0,
+        0, 3, 4, 0, 4, 5,
+        2, 1, 6, 2, 6, 7,
+
+        // Legs
+        8, 9, 10, 8, 10, 11,
+        12, 13, 14, 12, 14, 15,
+        16, 17, 18, 16, 18, 19,
+        20, 21, 22, 20, 22, 23
+
+    ];
+
+    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+
+    var chairShader = initShaders( gl, "vertex-shaderChair", "fragment-shaderChair" );
+    gl.useProgram( chairShader );
+
+    //Initializing transformation variables
+    gl.uniform1f( gl.getUniformLocation( chairShader, "alpha2"), alpha );
+    gl.uniform1f( gl.getUniformLocation( chairShader, "beta"), beta );
+    gl.uniform1f( gl.getUniformLocation( chairShader, "gamma"), gamma );
+    gl.uniform1f( gl.getUniformLocation( chairShader, "tx"), tx );
+    gl.uniform1f( gl.getUniformLocation( chairShader, "ty"), ty );
+    gl.uniform1f( gl.getUniformLocation( chairShader, "sx"), sx );
+    gl.uniform1f( gl.getUniformLocation( chairShader, "sy"), sy );
+
+    initLighting(chairShader, chairVerticies, chairIndexList);
+
+    var tableShader = initShaders( gl, "vertex-shader", "fragment-shader" );
+    gl.useProgram( tableShader );
+    initLighting(tableShader, tableVerticies, tableIndexList);
+}
+
+function initLighting(shader, verticies, indexList)
+{
+    numVertices = verticies.length;
     numTriangles = indexList.length/3;
 
-    var faceNormals = getFaceNormals( vertices, indexList, numTriangles );
-    var vertexNormals = getVertexNormals( vertices, indexList, faceNormals, numVertices, numTriangles );
+    var faceNormals = getFaceNormals( verticies, indexList, numTriangles );
+    var vertexNormals = getVertexNormals( verticies, indexList, faceNormals, numVertices, numTriangles );
     
     var indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);
@@ -62,9 +149,9 @@ function initGL(){
     
     var verticesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(verticies), gl.STATIC_DRAW);
     
-    var vertexPosition = gl.getAttribLocation(myShaderProgram,"vertexPosition");
+    var vertexPosition = gl.getAttribLocation(shader,"vertexPosition");
     gl.vertexAttribPointer( vertexPosition, 4, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vertexPosition );
     
@@ -72,11 +159,11 @@ function initGL(){
     gl.bindBuffer(gl.ARRAY_BUFFER, normalsBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(vertexNormals), gl.STATIC_DRAW);
     
-    var vertexNormal = gl.getAttribLocation(myShaderProgram,"vertexNormal");
+    var vertexNormal = gl.getAttribLocation(shader,"vertexNormal");
     gl.vertexAttribPointer( vertexNormal, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vertexNormal );
 
-    var eye = vec3( 0.0, 0.1, -100);
+    var eye = vec3( -50.0, 30.1, -200);
     var at = vec3(0.0 ,1.0, 0.0);
     var vup = vec3( 0.0, 0.1, 0.0 );
     
@@ -111,7 +198,7 @@ function initGL(){
         -dot( eye, v ), 
         -dot( eye, n ), 
         1.0];
-    gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "modelview"), false, M );
+    gl.uniformMatrix4fv( gl.getUniformLocation( shader, "modelview"), false, M );
      
     var Mit = [ u[0],
         v[0],
@@ -129,7 +216,7 @@ function initGL(){
         0.0,
         0.0,
         1.0];
-    gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "modelviewit"), false, Mit );
+    gl.uniformMatrix4fv( gl.getUniformLocation( shader, "modelviewit"), false, Mit );
 
     // Step 2: Set up orthographic and perspective projections
     
@@ -171,87 +258,85 @@ function initGL(){
         -2.0*farPlane*nearPlane/(farPlane-nearPlane),
         0.0];
     
-    gl.uniformMatrix4fv( gl.getUniformLocation( myShaderProgram, "projection"), false, P_persp );
+    gl.uniformMatrix4fv( gl.getUniformLocation( shader, "projection"), false, P_persp );
 
     if (light1Flag == 1)
     {
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ka"), 0.5, 0.5, 0.5 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "kd"), 0.5, 0.5, 0.5 );
+        gl.uniform3f( gl.getUniformLocation( shader, "ka"), 0.5, 0.5, 0.5 );
+        gl.uniform3f( gl.getUniformLocation( shader, "kd"), 0.5, 0.5, 0.5 );
 
         if (specularFlag == 0)
         {
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ks"), 0.0, 0.0, 0.0 );
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Is"), 0.0, 0.0, 0.0 );
+            gl.uniform3f( gl.getUniformLocation( shader, "ks"), 0.0, 0.0, 0.0 );
+            gl.uniform3f( gl.getUniformLocation( shader, "Is"), 0.0, 0.0, 0.0 );
         }
         else
         {
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ks"), 0.5, 0.5, 0.5 );
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Is"), 0.8, 0.8, 0.8 );
+            gl.uniform3f( gl.getUniformLocation( shader, "ks"), 0.5, 0.5, 0.5 );
+            gl.uniform3f( gl.getUniformLocation( shader, "Is"), 0.8, 0.8, 0.8 );
         }
 
 
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Ia"), 0.2, 0.2, 0.2 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Id"), 1.0, 1.0, 1.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Ia"), 0.2, 0.2, 0.2 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Id"), 1.0, 1.0, 1.0 );
         
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "p0"), 100.0, 100.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "p0"), 100.0, 100.0, 0.0 );
         
-        gl.uniform1f( gl.getUniformLocation( myShaderProgram, "alpha"), 10.0 );
+        gl.uniform1f( gl.getUniformLocation( shader, "alpha"), 10.0 );
     } 
 
     else
     {
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ka"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "kd"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ks"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "ka"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "kd"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "ks"), 0.0, 0.0, 0.0 );
 
 
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Ia"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Id"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Is"), 0.0, 0.0, 0.0  );
+        gl.uniform3f( gl.getUniformLocation( shader, "Ia"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Id"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Is"), 0.0, 0.0, 0.0  );
         
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "p0"), 0.0, 0.0, 10.0  );
+        gl.uniform3f( gl.getUniformLocation( shader, "p0"), 0.0, 0.0, 10.0  );
         
-        gl.uniform1f( gl.getUniformLocation( myShaderProgram, "alpha"), 10.0 );
+        gl.uniform1f( gl.getUniformLocation( shader, "alpha"), 10.0 );
     }
 
     if (light2Flag == 1)
     {
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ka2"), 0.5, 0.5, 0.5 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "kd2"), 0.5, 0.5, 0.5 );
+        gl.uniform3f( gl.getUniformLocation( shader, "ka2"), 0.5, 0.5, 0.5 );
+        gl.uniform3f( gl.getUniformLocation( shader, "kd2"), 0.5, 0.5, 0.5 );
 
         if (specularFlag == 0)
         {
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ks2"), 0.0, 0.0, 0.0 );
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Is2"), 0.0, 0.0, 0.0 );
+            gl.uniform3f( gl.getUniformLocation( shader, "ks2"), 0.0, 0.0, 0.0 );
+            gl.uniform3f( gl.getUniformLocation( shader, "Is2"), 0.0, 0.0, 0.0 );
         }
         else
         {
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ks2"), 0.5, 0.5, 0.5 );
-            gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Is2"), 0.8, 0.8, 0.8 );
+            gl.uniform3f( gl.getUniformLocation( shader, "ks2"), 0.5, 0.5, 0.5 );
+            gl.uniform3f( gl.getUniformLocation( shader, "Is2"), 0.8, 0.8, 0.8 );
         }
 
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Ia2"), 0.2, 0.2, 0.2 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Id2"), 1.0, 1.0, 1.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "lightDirection2"), -100.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Ia2"), 0.2, 0.2, 0.2 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Id2"), 1.0, 1.0, 1.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "lightDirection2"), -100.0, 0.0, 0.0 );
     } 
     else
     {
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ka2"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "kd2"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "ks2"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "ka2"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "kd2"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "ks2"), 0.0, 0.0, 0.0 );
 
 
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Ia2"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Id2"), 0.0, 0.0, 0.0 );
-        gl.uniform3f( gl.getUniformLocation( myShaderProgram, "Is2"), 0.0, 0.0, 0.0  );
+        gl.uniform3f( gl.getUniformLocation( shader, "Ia2"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Id2"), 0.0, 0.0, 0.0 );
+        gl.uniform3f( gl.getUniformLocation( shader, "Is2"), 0.0, 0.0, 0.0  );
                     }
-
-    // render the object
-    drawObject();
-
+        drawObject()
 }
+
 // FOLLOWING CODE SKELETON FOR getFaceNormals() NEEDS TO BE COMPLETED
-function getFaceNormals( vertices, indexList, numTriangles ) {
+function getFaceNormals( verticies, indexList, numTriangles ) {
 
     var faceNormals = [];
 
@@ -260,9 +345,9 @@ function getFaceNormals( vertices, indexList, numTriangles ) {
         var i0 = indexList[3*i];
         var i1 = indexList[3*i+1];
         var i2 = indexList[3*i+2];
-        var p0 = vertices[i0];
-        var p1 = vertices[i1];
-        var p2 = vertices[i2];
+        var p0 = verticies[i0];
+        var p1 = verticies[i1];
+        var p2 = verticies[i2];
 
         var v1 = vec3( p1[0]-p0[0], p1[1]-p0[1], p1[2]-p0[2] );
         var v2 = vec3( p2[0]-p0[0], p2[1]-p0[1], p2[2]-p0[2] );
@@ -277,7 +362,7 @@ function getFaceNormals( vertices, indexList, numTriangles ) {
 }
 
 // FOLLOWING CODE SKELETON FOR getVertexNormals() NEEDS TO BE COMPLETED
-function getVertexNormals( vertices, indexList, faceNormals, numVertices, numTriangles ) {
+function getVertexNormals( verticies, indexList, faceNormals, numVertices, numTriangles ) {
 
     var i = 0;
     var j = 0;
@@ -318,22 +403,7 @@ function getVertexNormals( vertices, indexList, faceNormals, numVertices, numTri
 }
 
 function drawObject() {
-    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
-    gl.drawElements( gl.TRIANGLES, 3 * numTriangles, gl.UNSIGNED_SHORT, 0 );
-}
-
-
-function projectionSelect(type)
-{
-    if (type == "orth")
-    {
-        projFlag = "orth";
-    }
-    else
-    {
-        projFlag = "per"
-    }
-    initGL();
+    gl.drawElements( gl.TRIANGLES, numTriangles*3, gl.UNSIGNED_SHORT, 0 );
 }
 
 function light1Switch()
@@ -373,5 +443,17 @@ function specularSwitch()
         specularFlag = 1;
     }   
     console.log(specularFlag);
+    initGL();
+}
+
+function rotateAroundY() 
+{
+    beta += 0.1;
+    initGL();
+}
+
+function translateX()
+{
+    tx += 0.1;
     initGL();
 }
