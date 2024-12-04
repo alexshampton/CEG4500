@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<script id="vertex-shaderChair" type="x-shader/x-vertex">
+<script id="vertex-shaderBox" type="x-shader/x-vertex">
 
     // INSERT CODE HERE
     // Step 3.2: Lighting Calculations in Vertex Shader
@@ -158,24 +158,7 @@
         0.0,
         1.0 );
 
-        mat4 Mscalex = mat4( sx,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0 );
-
-        mat4 Mxvec = Mx * Mtransx * Mscalex;
+        mat4 Mxvec = Mx * Mtransx ;
 
         mat4 My = mat4( cos(beta),
         0.0,
@@ -194,41 +177,7 @@
         0.0,
         1.0 );
 
-        mat4 Mtransy = mat4( 1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        ty,
-        0.0,
-        1.0 );
-
-        mat4 Mscaley = mat4( 1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        sy,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0 );
-
-        mat4 Myvec = My * Mtransy * Mscaley;
+        mat4 Myvec = My ;
 
         mat4 Mz = mat4( cos(gamma),
         -sin(gamma),
@@ -258,7 +207,7 @@
 
 </script>
 
-<script id="fragment-shaderChair" type="x-shader/x-fragment">
+<script id="fragment-shaderBox" type="x-shader/x-fragment">
 
     precision mediump float;
     varying vec3 R;
@@ -403,15 +352,13 @@
 <script type="text/javascript" src="../Common/initShaders.js"></script>
 <script type="text/javascript" src="../Common/MV.js"></script>
 <script type="text/javascript" src="project2.js"></script>
-<script type="text/javascript" src="object.js"></script>
 </head>
 
-<body onload = "initGL()">
+<body onload = "initGL()" onkeydown="moveShapeByKey(event)">
     <canvas id="gl-canvas" height="512" width="512"> </canvas>
     <button id="Light 1" onclick="light1Switch()">Light 1</button>
     <button id="Light 2" onclick="light2Switch()">Light 2</button>
-    <button id="Rotate Chair" onclick="rotateAroundY()">Rotate Chair</button>
-    <button id="Translate Chair" onclick="translateX()">Translate Chair</button>
+    <button id="Translate Chair" onclick="moveLeftX()">Translate Chair</button>
 
 </body>
 </html>

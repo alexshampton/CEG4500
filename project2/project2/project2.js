@@ -7,7 +7,7 @@ var projFlag;
 var light1Flag = 1;
 var light2Flag = 1;
 var specularFlag = 1;
-var chairIndexList;
+var boxIndexList;
 var tableIndexList;
 
 var alpha = 0.0;
@@ -28,25 +28,23 @@ function initGL(){
     gl.viewport( 0, 0, 512, 512 );
     gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
 
-    var chairVerticies = [
-        // Chair verticies
-        vec4(.6,  .45,  -.3,  1), // p0
-        vec4(.6, .0,  -.3,  1), // p1
-        vec4(1.2, .0,  -.3,  1), // p2
-        vec4(1.2,  .45,  -.3,  1), // p3
-        vec4(1.2,  .45,  .3,  1), // p4
-        vec4(.6,  .45,  .3,  1), // p5
-        vec4(.6, .0,  .3,  1), // p6
-        vec4(1.2, .0,  .3,  1), // p7
-        vec4(1.2,  1.0,  -.3,  1), // p8
-        vec4(1.2,  1.0,  .3,  1), // p9
+    var boxVerticies = [
+        // box verticies
+        vec4(-.3,  .45,  -.3,  1), // p0
+        vec4(-.3, .0,  -.3,  1), // p1
+        vec4(.3, .0,  -.3,  1), // p2
+        vec4(.3,  .45,  -.3,  1), // p3
+        vec4(.3,  .45,  .3,  1), // p4
+        vec4(-.3,  .45,  .3,  1), // p5
+        vec4(-.3, .0,  .3,  1), // p6
+        vec4(.3, .0,  .3,  1), // p7
     ];
 
     //Every face on the cube is divided into two triangles,
     // each triangle is described by three indices into
     // the array "verticies"
-    chairIndexList  = [
-        // Chair
+    boxIndexList  = [
+        // box
         0, 1, 3,
         1, 2, 3,
         6, 5, 7,
@@ -55,84 +53,140 @@ function initGL(){
         5, 6, 0,
         2, 4, 3,
         2, 7, 4,
-        0, 4, 5,
-        0, 3, 4,
         2, 1, 6,
-        2, 6, 7,
-        8, 3, 9,
-        3, 4, 9
+        2, 6, 7
     ];
 
-    var tableVerticies = [
+    // var tableVerticies = [
     
-        // Table Verticies
-        vec4( -.5,  .8,  -.5,  1), // p10
-        vec4( -.5,  .5,  -.5,  1), // p11
-        vec4(  .5,  .5,  -.5,  1), // p12
-        vec4(  .5,  .8,  -.5,  1), // p13
-        vec4(  .5,  .8,  .5,  1), // p14
-        vec4( -.5,  .8,  .5,  1), // p15
-        vec4( -.5,  .5,  .5,  1), // p16
-        vec4(  .5,  .5,  .5,  1), // p17
-        vec4( -.45, .5, -.45, 1), // p18
-        vec4( -.45, .0, -.45, 1), // p19
-        vec4( -.4, .0, -.4, 1), // p20
-        vec4( -.4, .5, -.4, 1), // p21
-        vec4( .45, .5, -.45, 1), // p22
-        vec4( .45, -.0, -.45, 1), // p23
-        vec4( .4, -.0, -.4, 1), // p24
-        vec4( .4, .5, -.4, 1), // p25
-        vec4( -.45, .5, .45, 1), // p26
-        vec4( -.45, -.0, .45, 1), // p27
-        vec4( -.4, -.0, .4, 1), // p28
-        vec4( -.4, .5, .4, 1), // p29
-        vec4( .45, .5, .45, 1), // p30
-        vec4( .45, -.0, .45, 1), // p31
-        vec4( .4, -.0, .4, 1), // p32
-        vec4( .4, .5, .4, 1) // p33
+    //     // Table Verticies
+    //     vec4( -.5,  .8,  -.5,  1), // p10
+    //     vec4( -.5,  .5,  -.5,  1), // p11
+    //     vec4(  .5,  .5,  -.5,  1), // p12
+    //     vec4(  .5,  .8,  -.5,  1), // p13
+    //     vec4(  .5,  .8,  .5,  1), // p14
+    //     vec4( -.5,  .8,  .5,  1), // p15
+    //     vec4( -.5,  .5,  .5,  1), // p16
+    //     vec4(  .5,  .5,  .5,  1), // p17
+    //     vec4( -.45, .5, -.45, 1), // p18
+    //     vec4( -.45, .0, -.45, 1), // p19
+    //     vec4( -.4, .0, -.4, 1), // p20
+    //     vec4( -.4, .5, -.4, 1), // p21
+    //     vec4( .45, .5, -.45, 1), // p22
+    //     vec4( .45, -.0, -.45, 1), // p23
+    //     vec4( .4, -.0, -.4, 1), // p24
+    //     vec4( .4, .5, -.4, 1), // p25
+    //     vec4( -.45, .5, .45, 1), // p26
+    //     vec4( -.45, -.0, .45, 1), // p27
+    //     vec4( -.4, -.0, .4, 1), // p28
+    //     vec4( -.4, .5, .4, 1), // p29
+    //     vec4( .45, .5, .45, 1), // p30
+    //     vec4( .45, -.0, .45, 1), // p31
+    //     vec4( .4, -.0, .4, 1), // p32
+    //     vec4( .4, .5, .4, 1) // p33
 
-    ];
+    // ];
 
-    //Every face on the cube is divided into two triangles,
-    // each triangle is described by three indices into
-    // the array "verticies"
-    tableIndexList  = [
+    // //Every face on the cube is divided into two triangles,
+    // // each triangle is described by three indices into
+    // // the array "verticies"
+    // tableIndexList  = [
 
-        // Table top
-        0, 1, 2, 0, 2, 3,
-        3, 2, 7, 3, 7, 4,
-        4, 7, 6, 4, 6, 5,
-        5, 6, 1, 5, 1, 0,
-        0, 3, 4, 0, 4, 5,
-        2, 1, 6, 2, 6, 7,
+    //     // Table top
+    //     0, 1, 2, 0, 2, 3,
+    //     3, 2, 7, 3, 7, 4,
+    //     4, 7, 6, 4, 6, 5,
+    //     5, 6, 1, 5, 1, 0,
+    //     0, 3, 4, 0, 4, 5,
+    //     2, 1, 6, 2, 6, 7,
 
-        // Legs
-        8, 9, 10, 8, 10, 11,
-        12, 13, 14, 12, 14, 15,
-        16, 17, 18, 16, 18, 19,
-        20, 21, 22, 20, 22, 23
+    //     // Legs
+    //     8, 9, 10, 8, 10, 11,
+    //     12, 13, 14, 12, 14, 15,
+    //     16, 17, 18, 16, 18, 19,
+    //     20, 21, 22, 20, 22, 23
 
-    ];
+    // ];
+
+var octagonVertices = [
+    // Front face
+    vec4(-0.125, 0.25, -0.05, 1.0), // p0
+    vec4(0.125, 0.25, -0.05, 1.0), // p1
+    vec4(0.25, 0.125, -0.05, 1.0), // p2
+    vec4(0.25, -0.125, -0.05, 1.0), // p3
+    vec4(0.125, -0.25, -0.05, 1.0), // p4
+    vec4(-0.125, -0.25, -0.05, 1.0), // p5dd
+    vec4(-0.25, -0.125, -0.05, 1.0), // p6
+    vec4(-0.25, 0.125, -0.05, 1.0), // p7
+
+    // Back face
+    vec4(-0.125, 0.25, -0.0, 1.0), // p8
+    vec4(0.125, 0.25, -0.0, 1.0), // p9
+    vec4(0.25, 0.125, -0.0, 1.0), // p10
+    vec4(0.25, -0.125, -0.0, 1.0), // p11
+    vec4(0.125, -0.25, -0.0, 1.0), // p12
+    vec4(-0.125, -0.25, -0.0, 1.0), // p13
+    vec4(-0.25, -0.125, -0.0, 1.0), // p14
+    vec4(-0.25, 0.125, -0.0, 1.0) // p15
+];
+
+
+var octagonIndices = [
+    //Front face
+    0,4,1,
+    1,4,2,
+    2,4,3,
+    0,5,4,
+    0,6,5,
+    0,7,6,
+
+    //back face
+    8,12,9,
+    9,12,10,
+    10,12,11,
+    8,13,12,
+    8,14,13,
+    8,15,14,
+
+    //Sides
+    0,15,7,
+    8,15,0,
+    7,14,6,
+    15,14,7,
+    6,13,5,
+    14,13,6,
+
+    9,2,10,
+    1,2,9,
+    10,3,11,
+    2,3,10,
+    11,4,12,
+    3,4,11
+];
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
-    var chairShader = initShaders( gl, "vertex-shaderChair", "fragment-shaderChair" );
-    gl.useProgram( chairShader );
+    var boxShader = initShaders( gl, "vertex-shaderBox", "fragment-shaderBox" );
+    gl.useProgram( boxShader );
 
     //Initializing transformation variables
-    gl.uniform1f( gl.getUniformLocation( chairShader, "alpha2"), alpha );
-    gl.uniform1f( gl.getUniformLocation( chairShader, "beta"), beta );
-    gl.uniform1f( gl.getUniformLocation( chairShader, "gamma"), gamma );
-    gl.uniform1f( gl.getUniformLocation( chairShader, "tx"), tx );
-    gl.uniform1f( gl.getUniformLocation( chairShader, "ty"), ty );
-    gl.uniform1f( gl.getUniformLocation( chairShader, "sx"), sx );
-    gl.uniform1f( gl.getUniformLocation( chairShader, "sy"), sy );
+    gl.uniform1f( gl.getUniformLocation( boxShader, "alpha2"), alpha );
+    gl.uniform1f( gl.getUniformLocation( boxShader, "beta"), beta );
+    gl.uniform1f( gl.getUniformLocation( boxShader, "gamma"), gamma );
+    gl.uniform1f( gl.getUniformLocation( boxShader, "tx"), tx );
+    gl.uniform1f( gl.getUniformLocation( boxShader, "ty"), ty );
+    gl.uniform1f( gl.getUniformLocation( boxShader, "sx"), sx );
+    gl.uniform1f( gl.getUniformLocation( boxShader, "sy"), sy );
 
-    initLighting(chairShader, chairVerticies, chairIndexList);
+    initLighting(boxShader, boxVerticies, boxIndexList);
 
-    var tableShader = initShaders( gl, "vertex-shader", "fragment-shader" );
-    gl.useProgram( tableShader );
-    initLighting(tableShader, tableVerticies, tableIndexList);
+    // var tableShader = initShaders( gl, "vertex-shader", "fragment-shader" );
+    // gl.useProgram( tableShader );
+    // initLighting(tableShader, tableVerticies, tableIndexList);
+
+    var coinShader = initShaders( gl, "vertex-shader", "fragment-shader" );
+    gl.useProgram( coinShader );
+    initLighting(coinShader, octagonVertices, octagonIndices);
 }
 
 function initLighting(shader, verticies, indexList)
@@ -163,7 +217,7 @@ function initLighting(shader, verticies, indexList)
     gl.vertexAttribPointer( vertexNormal, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vertexNormal );
 
-    var eye = vec3( -50.0, 30.1, -200);
+    var eye = vec3( -10.0, 30.1, -200);
     var at = vec3(0.0 ,1.0, 0.0);
     var vup = vec3( 0.0, 0.1, 0.0 );
     
@@ -449,11 +503,32 @@ function specularSwitch()
 function rotateAroundY() 
 {
     beta += 0.1;
+    console.log(beta); 
     initGL();
 }
 
-function translateX()
+function moveX(direction)
 {
-    tx += 0.1;
+    tx += 0.2 * direction;
     initGL();
+}
+
+//Moves square up when spacebar is pressed
+function moveShapeByKey(event)
+{
+    var keyAscii = event.keyCode;
+    if (keyAscii==65) //A
+    {
+        moveX(1);
+    }
+    else if (keyAscii==68) //D
+    {
+        moveX(-1);
+    }
+}
+
+function render()
+{
+    rotateAroundY();
+    requestAnimationFrame( render );
 }
