@@ -354,11 +354,14 @@
 <script type="text/javascript" src="project2.js"></script>
 </head>
 
-<body onload = "initGL()" onkeydown="moveShapeByKey(event)">
+<body onload = "render()" onkeydown="moveShapeByKey(event)">
     <canvas id="gl-canvas" height="512" width="512"> </canvas>
-    <button id="Light 1" onclick="light1Switch()">Light 1</button>
+    <!-- <button id="Light 1" onclick="light1Switch()">Light 1</button>
     <button id="Light 2" onclick="light2Switch()">Light 2</button>
-    <button id="Translate Chair" onclick="moveLeftX()">Translate Chair</button>
+    <button id="Translate Chair" onclick="moveLeftX()">Translate Chair</button> -->
+    <span class="score" id="score">0</span>
+    <span class="gameover" id="gameover"></span>
+
 
 </body>
 </html>

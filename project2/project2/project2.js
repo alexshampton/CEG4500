@@ -18,7 +18,16 @@ var ty = 0.0;
 var sx = 1.0;
 var sy = 1.0;
 
+var coinTransDown = -0.1;
+var coinTransX = Math.random() * (1.5 - -1.5) + -1.5;;
+var gameStart = Date.now();
+var gameNow;
+
+var gameOver = false;
+var score = 0;
+
 function initGL(){
+
     var canvas = document.getElementById( "gl-canvas" );
     
     gl = WebGLUtils.setupWebGL( canvas );
@@ -30,14 +39,14 @@ function initGL(){
 
     var boxVerticies = [
         // box verticies
-        vec4(-.3,  .45,  -.3,  1), // p0
-        vec4(-.3, .0,  -.3,  1), // p1
-        vec4(.3, .0,  -.3,  1), // p2
-        vec4(.3,  .45,  -.3,  1), // p3
-        vec4(.3,  .45,  .3,  1), // p4
-        vec4(-.3,  .45,  .3,  1), // p5
-        vec4(-.3, .0,  .3,  1), // p6
-        vec4(.3, .0,  .3,  1), // p7
+        vec4(-.3,  .0,  -.3,  1), // p0
+        vec4(-.3, -.45,  -.3,  1), // p1
+        vec4(.3, -.45,  -.3,  1), // p2
+        vec4(.3,  .0,  -.3,  1), // p3
+        vec4(.3,  .0,  .3,  1), // p4
+        vec4(-.3,  .0,  .3,  1), // p5
+        vec4(-.3, -.45,  .3,  1), // p6
+        vec4(.3, -.45,  .3,  1), // p7
     ];
 
     //Every face on the cube is divided into two triangles,
@@ -57,77 +66,28 @@ function initGL(){
         2, 6, 7
     ];
 
-    // var tableVerticies = [
-    
-    //     // Table Verticies
-    //     vec4( -.5,  .8,  -.5,  1), // p10
-    //     vec4( -.5,  .5,  -.5,  1), // p11
-    //     vec4(  .5,  .5,  -.5,  1), // p12
-    //     vec4(  .5,  .8,  -.5,  1), // p13
-    //     vec4(  .5,  .8,  .5,  1), // p14
-    //     vec4( -.5,  .8,  .5,  1), // p15
-    //     vec4( -.5,  .5,  .5,  1), // p16
-    //     vec4(  .5,  .5,  .5,  1), // p17
-    //     vec4( -.45, .5, -.45, 1), // p18
-    //     vec4( -.45, .0, -.45, 1), // p19
-    //     vec4( -.4, .0, -.4, 1), // p20
-    //     vec4( -.4, .5, -.4, 1), // p21
-    //     vec4( .45, .5, -.45, 1), // p22
-    //     vec4( .45, -.0, -.45, 1), // p23
-    //     vec4( .4, -.0, -.4, 1), // p24
-    //     vec4( .4, .5, -.4, 1), // p25
-    //     vec4( -.45, .5, .45, 1), // p26
-    //     vec4( -.45, -.0, .45, 1), // p27
-    //     vec4( -.4, -.0, .4, 1), // p28
-    //     vec4( -.4, .5, .4, 1), // p29
-    //     vec4( .45, .5, .45, 1), // p30
-    //     vec4( .45, -.0, .45, 1), // p31
-    //     vec4( .4, -.0, .4, 1), // p32
-    //     vec4( .4, .5, .4, 1) // p33
-
-    // ];
-
-    // //Every face on the cube is divided into two triangles,
-    // // each triangle is described by three indices into
-    // // the array "verticies"
-    // tableIndexList  = [
-
-    //     // Table top
-    //     0, 1, 2, 0, 2, 3,
-    //     3, 2, 7, 3, 7, 4,
-    //     4, 7, 6, 4, 6, 5,
-    //     5, 6, 1, 5, 1, 0,
-    //     0, 3, 4, 0, 4, 5,
-    //     2, 1, 6, 2, 6, 7,
-
-    //     // Legs
-    //     8, 9, 10, 8, 10, 11,
-    //     12, 13, 14, 12, 14, 15,
-    //     16, 17, 18, 16, 18, 19,
-    //     20, 21, 22, 20, 22, 23
-
-    // ];
-
 var octagonVertices = [
-    // Front face
-    vec4(-0.125, 0.25, -0.05, 1.0), // p0
-    vec4(0.125, 0.25, -0.05, 1.0), // p1
-    vec4(0.25, 0.125, -0.05, 1.0), // p2
-    vec4(0.25, -0.125, -0.05, 1.0), // p3
-    vec4(0.125, -0.25, -0.05, 1.0), // p4
-    vec4(-0.125, -0.25, -0.05, 1.0), // p5dd
-    vec4(-0.25, -0.125, -0.05, 1.0), // p6
-    vec4(-0.25, 0.125, -0.05, 1.0), // p7
+
+// Front face
+    vec4(-0.25 + coinTransX , 3.00 + coinTransDown, -0.1, 1.0), // p0
+    vec4(-0.125 + coinTransX, 3.00 + coinTransDown, -0.1, 1.0), // p1
+    vec4(-0.0625 + coinTransX, 2.9375 + coinTransDown , -0.1, 1.0), // p2
+    vec4(-0.0625 + coinTransX, 2.8125 + coinTransDown , -0.1, 1.0), // p3
+    vec4(-0.125 + coinTransX, 2.75 + coinTransDown , -0.1, 1.0), // p4
+    vec4(-0.25 + coinTransX, 2.75 + coinTransDown , -0.1, 1.0), // p5
+    vec4(-0.3125 + coinTransX, 2.8125+ coinTransDown, -0.1, 1.0), // p6
+    vec4(-0.3125 + coinTransX, 2.9375 + coinTransDown, -0.1, 1.0), // p7
 
     // Back face
-    vec4(-0.125, 0.25, -0.0, 1.0), // p8
-    vec4(0.125, 0.25, -0.0, 1.0), // p9
-    vec4(0.25, 0.125, -0.0, 1.0), // p10
-    vec4(0.25, -0.125, -0.0, 1.0), // p11
-    vec4(0.125, -0.25, -0.0, 1.0), // p12
-    vec4(-0.125, -0.25, -0.0, 1.0), // p13
-    vec4(-0.25, -0.125, -0.0, 1.0), // p14
-    vec4(-0.25, 0.125, -0.0, 1.0) // p15
+    vec4(-0.25 + coinTransX, 3.00 + coinTransDown, 0.0, 1.0), // p8
+    vec4(-0.125 + coinTransX, 3.00 + coinTransDown, 0.0, 1.0), // p9
+    vec4(-0.0625 + coinTransX, 2.9375 + coinTransDown, 0.0, 1.0), // p10
+    vec4(-0.0625 + coinTransX, 2.8125 + coinTransDown, 0.0, 1.0), // p11
+    vec4(-0.125 + coinTransX, 2.75 + coinTransDown, 0.0, 1.0), // p12
+    vec4(-0.25 + coinTransX, 2.75 + coinTransDown, 0.0, 1.0), // p13
+    vec4(-0.3125 + coinTransX, 2.8125 + coinTransDown, 0.0, 1.0), // p14
+    vec4(-0.3125 + coinTransX, 2.9375 + coinTransDown, 0.0, 1.0) // p15
+
 ];
 
 
@@ -218,7 +178,7 @@ function initLighting(shader, verticies, indexList)
     gl.enableVertexAttribArray( vertexNormal );
 
     var eye = vec3( -10.0, 30.1, -200);
-    var at = vec3(0.0 ,1.0, 0.0);
+    var at = vec3(0.0, 1.0, 0.0);
     var vup = vec3( 0.0, 0.1, 0.0 );
     
     // Obtain n (use subtract and normalize in MV.js)
@@ -504,13 +464,28 @@ function rotateAroundY()
 {
     beta += 0.1;
     console.log(beta); 
-    initGL();
+    //initGL();
 }
 
 function moveX(direction)
 {
-    tx += 0.2 * direction;
-    initGL();
+    if(-1.6<Math.round(tx * 10)/10  && Math.round(tx * 10)/10<1.6)
+    {
+        tx += 0.2 * direction;
+    }
+
+    else
+    {
+        if(direction == -1 && Math.round(tx * 10)/10>=1.6)
+        {
+            tx += 0.2 * direction;
+        }
+        else if(direction == 1 && Math.round(tx * 10)/10<1.6)
+        {
+            tx += 0.2 * direction;
+        }
+    }
+
 }
 
 //Moves square up when spacebar is pressed
@@ -527,8 +502,64 @@ function moveShapeByKey(event)
     }
 }
 
+// function updateScore() {
+//     score += 1;
+//     document.getElementById("score").innerHTML = score;
+// }
+
 function render()
 {
-    rotateAroundY();
-    requestAnimationFrame( render );
+    if(gameOver == false){
+
+        //Checks Y coordinates of coin to randomize x axis randomly
+        if (Math.round(coinTransDown * 10)/10  == -0.4 || Math.round(coinTransDown * 10)/10  == -1.5  )
+        {
+            coinTransX = Math.random() * (1.3 - -1.3) + -1.3;
+        }
+        //box tracking vars
+        var boxX1 = (.3 + tx);
+        var boxX2 = (-.3 + tx);
+        var boxY1 = 0.0;
+        var boxY2 = -0.45;
+
+        //Coin tracking vars
+        var coinY1 = (2.8125 + coinTransDown);
+        var coinY2 = (2.75 + coinTransDown);
+        var coinX1 = -0.0625 + coinTransX;
+        var coinX4 = -0.3125 + coinTransX;
+        // var coinX3 = -0.25 + coinTransX;
+        // var coinX2 = -0.125 + coinTransX;
+
+        initGL();
+
+        //If the coins Y coords match the box's Y coords
+        if(coinY1 <= boxY1 && coinY2 >= boxY2)
+        {
+            if((coinX1>=boxX1 && coinX4<=boxX1) || (coinX1>=boxX2 && coinX4<=boxX2))
+            {
+                document.getElementById("gameover").innerHTML = "Game Over";
+                gameOver = true;
+            }
+            // console.log("BOX: " + boxX1 + ", " + boxX2 + "Coin: " + coinX1 + ", " + coinX4);
+            else if(boxX1> coinX1 && coinX4 > boxX2 && Math.round(coinY1 * 1000)/1000  == -0.137)
+            {
+                console.log("SCORE" );
+                coinTransDown = -0.1;
+                score += 1;
+                document.getElementById("score").innerHTML = score;
+            }
+        }
+
+        //Translate coin downward
+        coinTransDown += -0.05;
+
+        //If the coin goes off the screen, game is over
+        if(coinTransDown <= -3.5)
+        {
+            document.getElementById("gameover").innerHTML = "Game Over";
+            gameOver = true;
+        }
+
+        requestAnimationFrame( render );
+    }
 }
