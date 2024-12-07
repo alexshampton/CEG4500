@@ -163,9 +163,9 @@ function drawCube() {
     textureImage = gl.createTexture(); // for flower image
     gl.bindTexture( gl.TEXTURE_2D, textureImage );
     const myImage = new Image();
-    var url = "https://c1.staticflickr.com/9/8873/18598400202_3af67ef38f_q.jpg";
+    var url = "https://live.staticflickr.com/65535/54185929641_b0cf958f6a_b.jpg";
     myImage.crossOrigin = "anonymous";
-    
+
     myImage.onload = function() {
         gl.bindTexture( gl.TEXTURE_2D, textureImage );
         gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
