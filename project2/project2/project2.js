@@ -19,7 +19,7 @@ var sx = 1.0;
 var sy = 1.0;
 
 var coinTransDown = -0.1;
-var coinTransX = Math.random() * (1.5 - -1.5) + -1.5;;
+var coinTransX = Math.random() * (1.5 - -1.5) + -1.5;
 var gameStart = Date.now();
 var gameNow;
 
@@ -38,6 +38,8 @@ var boxIndexList;
 var boxtextureCoordinates;
 var boxVerticies;
 var boxtextureCoordinate;
+var boxTexture;
+var boxtextureVertexbuffer;
 
 var coinShader;
 var coinTriangles;
@@ -49,7 +51,10 @@ var coinverticesBuffer;
 var coinIndexList;
 var cointextureCoordinates;
 var coinVerticies;
-var cointextureCoordinate;
+var cointextureVertexbuffer;
+var coinColor;
+var coinColors;
+var colorBuffer;
 
 var trafficConeColors;
 var trafficConeCoordinates;
@@ -66,6 +71,15 @@ var trafficConetextureCoordinates;
 var trafficConeVerticies;
 var trafficConetextureCoordinate;
 var trafficConevertexNormals;
+var conetextureCoordinate;
+var coneTexture;
+var conetextureCoordinates;
+var conetextureVertexbuffer;
+var coneTransDown = -0.1;
+var coneTransX = Math.random() * (1.5 - -1.5) + -1.5;
+
+var shape = ["coin", "cone"];
+var displayedShape = shape[Math.floor(Math.random() * shape.length)];
 
 function initGL(){
 
@@ -168,17 +182,40 @@ function initGL(){
         vec4(-0.3125, 2.8125, 0.0, 1.0), // p14
         vec4(-0.3125, 2.9375, 0.0, 1.0) // p15
 
-]   ;
+    ]  ;
+
+    coinColors = [
+
+// Front face
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+
+        // Back face
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0), 
+        vec4(1.0 , 223.0/255.0, 0.0, 1.0)
+    ]  ;
 
 
     coinIndexList = [
         //Front face
+        0,7,5,
+        0,6,5,
+        0,5,4,
         0,4,1,
         1,4,2,
         2,4,3,
-        0,5,4,
-        0,6,5,
-        0,7,6,
 
         //back face
         8,12,9,
@@ -204,59 +241,27 @@ function initGL(){
         3,4,11
     ];
 
-    cointextureCoordinates =
-    [// Front
-     // 0.0,  0.0,
-     // 1.0,  0.0,
-     // 1.0,  1.0,
-     // 0.0,  1.0,
-     1.0,  1.0,
-     1.0,  0.0,
-     0.0,  0.0,
-     0.0,  1.0,
-     // Back
-     0.0,  0.0,
-     1.0,  0.0,
-     1.0,  1.0,
-     0.0,  1.0,
-     // Top
-     0.0,  0.0,
-     1.0,  0.0,
-     1.0,  1.0,
-     0.0,  1.0,
-     // Bottom
-     0.0,  0.0,
-     1.0,  0.0,
-     1.0,  1.0,
-     0.0,  1.0,
-     // Right
-     0.0,  0.0,
-     1.0,  0.0,
-     1.0,  1.0,
-     0.0,  1.0,
-     // Left
-     0.0,  0.0,
-     1.0,  0.0,
-     1.0,  1.0,
-     0.0,  1.0
- ];
+    conetextureCoordinates = [
+    0.5, 1.0
+    ];
+
     coinTraingles = coinIndexList.length/3;
 
     
     trafficConeVerticies =
-    [vec4( 0.0,  .2,  0.0,  1), // p0
-    vec4( -.2, -.2,  -.2,  1), // p1
-    vec4(  .2, -.2,  -.2,  1), // p2
-    vec4(  .2,  -.2,  .2,  1), // p3
-    vec4( -.2,  -.2,  .2,  1), //p4
-    vec4( -.3,  -.2,  .2,  1), //p5
-    vec4(  .3,  -.2,  .2,  1), //p6
-    vec4( -.3,  -.2,  -.2,  1), //p7
-    vec4( .3,  -.2,  -.2,  1), //p8
-    vec4( -.3,  -.3,  .2,  1), //p9
-    vec4( -.3,  -.3,  .2,  1), //p10
-    vec4( -.3,  -.3,  -.2,  1), //p11
-    vec4( -.3,  -.3,  -.2,  1)];  // p12
+    [vec4( 0.0,  3.0,  0.0,  1), // p0
+    vec4( -.1,  2.7,  -.2,  1), // p1
+    vec4(  .1, 2.7,  -.2,  1), // p2
+    vec4(  .1,  2.7,  .2,  1), // p3
+    vec4( -.1,  2.7,  .2,  1), //p4
+    vec4( -.15,  2.7,  .3,  1), //p5
+    vec4(  .15,  2.7,  .3,  1), //p6
+    vec4( -.15,  2.7,  -.3,  1), //p7
+    vec4( .15,  2.7,  -.3,  1), //p8
+    vec4( -.15,  2.65,  .3,  1), //p9
+    vec4( .15,  2.65,  .3,  1), //p10
+    vec4( -.15,  2.65,  -.3,  1), //p11
+    vec4( .15,  2.65,  -.3,  1)];  // p12
     //Colors at Vertices of Prism
    
     trafficConeColors = 
@@ -278,7 +283,7 @@ function initGL(){
     trafficConeIndexList = 
     [
 	//Cone
-	0, 1, 2,
+    0, 1, 2,
     0, 2, 3,
     0, 3, 4,
     0, 4, 1,
@@ -300,7 +305,15 @@ function initGL(){
 	
 	//Right
 	6,12,8,
-	10,12,6
+	10,12,6,
+
+	//Front 
+	8,11,12,
+	7,11,8,
+	
+	//Back
+	6,9,10,
+    5,9,6
     ];
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
@@ -326,14 +339,14 @@ function initBox()
     gl.uniform1f( gl.getUniformLocation( boxShader, "sx"), sx );
     gl.uniform1f( gl.getUniformLocation( boxShader, "sy"), sy );
 
-    textureImage = gl.createTexture(); 
-    gl.bindTexture( gl.TEXTURE_2D, textureImage );
+    boxTexture = gl.createTexture(); 
+    gl.bindTexture( gl.TEXTURE_2D, boxTexture );
     const myImage = new Image();
     var url = "https://live.staticflickr.com/65535/54185929641_b0cf958f6a_b.jpg";
     myImage.crossOrigin = "anonymous";
 
     myImage.onload = function() {
-        gl.bindTexture( gl.TEXTURE_2D, textureImage );
+        gl.bindTexture( gl.TEXTURE_2D, boxTexture );
         gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
         gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, myImage );
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -341,17 +354,9 @@ function initBox()
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);        
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         //gl.generateMipmap( gl.TEXTURE_2D ); // only use this if the image is a power of 2
-        return textureImage;
+        return boxTexture;
     };
     myImage.src = url;
-
-    boxtextureVertexbuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,boxtextureVertexbuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(boxtextureCoordinates), gl.STATIC_DRAW);
-    
-    boxtextureCoordinate = gl.getAttribLocation(boxShader,"textureCoordinate");
-    gl.vertexAttribPointer( boxtextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( boxtextureCoordinate ); 
 
     numVertices = boxVerticies.length;
     numTriangles = boxIndexList.length/3;
@@ -380,54 +385,33 @@ function initBox()
     gl.enableVertexAttribArray( boxvertexNormal );
 
     initLighting(boxShader);
+
+    boxtextureVertexbuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,boxtextureVertexbuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(boxtextureCoordinates), gl.STATIC_DRAW);
+    
+    boxtextureCoordinate = gl.getAttribLocation(boxShader,"textureCoordinate");
+    gl.vertexAttribPointer( boxtextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( boxtextureCoordinate ); 
+
 }
 
 function initCoin()
 {
-    coinShader = initShaders( gl, "vertex-shader", "fragment-shader" );
+    coinShader = initShaders( gl, "vertex-shaderCoin", "fragment-shaderCoin" );
     gl.useProgram( coinShader );
 
     // Initializing transformation variables
-    gl.uniform1f( gl.getUniformLocation( boxShader, "alpha2"), alpha );
-    gl.uniform1f( gl.getUniformLocation( boxShader, "beta"), beta );
-    gl.uniform1f( gl.getUniformLocation( boxShader, "gamma"), gamma );
-    gl.uniform1f( gl.getUniformLocation( boxShader, "tx"), tx );
-    gl.uniform1f( gl.getUniformLocation( boxShader, "ty"), ty );
-    gl.uniform1f( gl.getUniformLocation( boxShader, "sx"), sx );
-    gl.uniform1f( gl.getUniformLocation( boxShader, "sy"), sy );
-
-    textureImage = gl.createTexture(); 
-    gl.bindTexture( gl.TEXTURE_2D, textureImage );
-    const newImage = new Image();
-    var url = "https://live.staticflickr.com/65535/54188267028_276718aa17_b.jpg";
-    newImage.crossOrigin = "anonymous";
-
-    newImage.onload = function() {
-        gl.bindTexture( gl.TEXTURE_2D, textureImage );
-        gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
-        gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, newImage );
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);        
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        //gl.generateMipmap( gl.TEXTURE_2D ); // only use this if the image is a power of 2
-        return textureImage;
-    };
-    newImage.src = url;
-
-    cointextureVertexbuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,cointextureVertexbuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(cointextureCoordinates), gl.STATIC_DRAW);
-    
-    cointextureCoordinate = gl.getAttribLocation(coinShader,"textureCoordinate");
-    gl.vertexAttribPointer( cointextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( cointextureCoordinate ); 
-
-    numVertices = coinVerticies.length;
-    numTriangles = coinIndexList.length/3;
+    gl.uniform1f( gl.getUniformLocation( coinShader, "alpha2"), alpha );
+    gl.uniform1f( gl.getUniformLocation( coinShader, "beta"), beta );
+    gl.uniform1f( gl.getUniformLocation( coinShader, "gamma"), gamma );
+    gl.uniform1f( gl.getUniformLocation( coinShader, "tx"), tx );
+    gl.uniform1f( gl.getUniformLocation( coinShader, "ty"), ty );
+    gl.uniform1f( gl.getUniformLocation( coinShader, "sx"), sx );
+    gl.uniform1f( gl.getUniformLocation( coinShader, "sy"), sy );
 
     var faceNormals = getFaceNormals( coinVerticies, coinIndexList, numTriangles );
-    coinvertexNormals = getVertexNormals( coinVerticies, coinIndexList, faceNormals, numVertices, numTriangles );
+    var coinvertexNormals = getVertexNormals( coinVerticies, coinIndexList, faceNormals, numVertices, numTriangles );
     
     coinindexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,coinindexBuffer);
@@ -441,6 +425,14 @@ function initCoin()
     gl.vertexAttribPointer( coinvertexPosition, 4, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( coinvertexPosition );
     
+    colorBuffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, colorBuffer );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(coinColors), gl.STATIC_DRAW );
+    
+    coinColor = gl.getAttribLocation( coinShader, "myColor" );
+    gl.vertexAttribPointer( coinColor, 4, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( coinColor );
+
     coinnormalsBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, coinnormalsBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(coinvertexNormals), gl.STATIC_DRAW);
@@ -450,7 +442,7 @@ function initCoin()
     gl.enableVertexAttribArray( coinvertexNormal );
 
     initLighting(coinShader);
-    gl.drawElements( gl.TRIANGLES, numTriangles*3 , gl.UNSIGNED_SHORT, 0 );
+
 }
 
 function initCone()
@@ -467,6 +459,25 @@ function initCone()
     gl.uniform1f( gl.getUniformLocation( trafficConeShader, "sx"), sx );
     gl.uniform1f( gl.getUniformLocation( trafficConeShader, "sy"), sy );
 
+    coneTexture = gl.createTexture(); 
+    gl.bindTexture( gl.TEXTURE_2D, coneTexture );
+    const newImage = new Image();
+    var url = "https://live.staticflickr.com/65535/54189494144_bef4535887_w.jpg";
+    newImage.crossOrigin = "anonymous";
+
+    newImage.onload = function() {
+        gl.bindTexture( gl.TEXTURE_2D, coneTexture );
+        gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
+        gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, newImage );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);        
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        //gl.generateMipmap( gl.TEXTURE_2D ); // only use this if the image is a power of 2
+        return coneTexture;
+    };
+    newImage.src = url;
+    
     numVertices = boxVerticies.length;
     numTriangles = boxIndexList.length/3;
 
@@ -494,6 +505,14 @@ function initCone()
     gl.enableVertexAttribArray( trafficConevertexNormal );
 
     initLighting(trafficConeShader);
+
+    conetextureVertexbuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,conetextureVertexbuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(conetextureCoordinates), gl.STATIC_DRAW);
+    
+    conetextureCoordinate = gl.getAttribLocation(trafficConeShader,"textureCoordinate");
+    gl.vertexAttribPointer( conetextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( conetextureCoordinate ); 
 }
 
 function initLighting(shader)
@@ -741,45 +760,6 @@ function drawObject() {
     gl.drawElements( gl.TRIANGLES, numTriangles*3, gl.UNSIGNED_SHORT, 0 );
 }
 
-function light1Switch()
-{
-    if (light1Flag == 1)
-    {
-        light1Flag = 0;
-    }
-    else
-    {
-        light1Flag = 1;
-    }
-    initGL();
-}
-
-function light2Switch()
-{
-    if (light2Flag == 1)
-    {
-        light2Flag = 0;
-    }
-    else
-    {
-        light2Flag = 1;
-    }
-    initGL();
-}
-
-function specularSwitch()
-{
-    if (specularFlag == 1)
-    {
-        specularFlag = 0;
-    }
-    else
-    {
-        specularFlag = 1;
-    }   
-    console.log(specularFlag);
-    initGL();
-}
 
 function rotateAroundY() 
 {
@@ -829,14 +809,6 @@ function render()
 {
     if(gameOver == false){
 
-        //Checks Y coordinates of coin to randomize x axis randomly
-        if (Math.round(coinTransDown * 1000)/1000  == -0.405 || Math.round(coinTransDown * 1000)/1000  == -1.505)
-        {
-            coinTransX = Math.random() * (1.3 - -1.3) + -1.3;
-            gl.useProgram(coinShader);
-            gl.uniform1f( gl.getUniformLocation( coinShader, "tx"), coinTransX);
-        }
-
         //box tracking vars
         var boxX1 = (.3 + tx);
         var boxX2 = (-.3 + tx);
@@ -849,44 +821,104 @@ function render()
         var coinX1 = -0.0625 + coinTransX;
         var coinX4 = -0.3125 + coinTransX;
 
-        //If the coins Y coords match the box's Y coords
-        if(coinY1 <= boxY1 && coinY2 >= boxY2)
-        {
-            if((coinX1>=boxX1 && coinX4<=boxX1) || (coinX1>=boxX2 && coinX4<=boxX2))
+        //cone tracking vars
+        var coneY1 = (2.7 + coneTransDown);
+        var coneY2 = (2.65 + coneTransDown);
+        var coneX1 = 0.15 + coneTransX;
+        var coneX4 = -0.15 + coneTransX;
+
+        if (displayedShape == "coin")
+        {        
+            //Checks Y coordinates of coin to randomize x axis randomly
+            if (Math.round(coinTransDown * 1000)/1000  == -0.405 || Math.round(coinTransDown * 1000)/1000  == -1.505)
+            {
+                coinTransX = Math.random() * (1.3 - -1.3) + -1.3;
+                gl.useProgram(coinShader);
+                gl.uniform1f( gl.getUniformLocation( coinShader, "tx"), coinTransX);
+            }
+
+            //If the coins Y coords match the box's Y coords
+            if(coinY1 <= boxY1 && coinY2 >= boxY2)
+            {
+                if((coinX1>=boxX1 && coinX4<=boxX1) || (coinX1>=boxX2 && coinX4<=boxX2))
+                {
+                    document.getElementById("gameover").innerHTML = "Game Over";
+                    gameOver = true;
+                }
+
+                else if(boxX1> coinX1 && coinX4 > boxX2 && Math.round(coinY1 * 1000)/1000  == -0.137)
+                {
+                    console.log("SCORE" );
+                    coinTransDown = -0.1;
+                    gl.useProgram(coinShader);
+                    gl.uniform1f( gl.getUniformLocation( coinShader, "ty"), coinTransDown );
+                    score += 1;
+                    document.getElementById("score").innerHTML = score;
+                    displayedShape = shape[Math.floor(Math.random() * shape.length)];
+                }
+            }
+        
+            //Translate coin downward
+            coinTransDown += -0.005;
+            gl.useProgram(coinShader);
+            gl.uniform1f( gl.getUniformLocation( coinShader, "ty"), coinTransDown );
+        
+            // //If the coin goes off the screen, game is over
+            if(coinTransDown <= -3.5)
             {
                 document.getElementById("gameover").innerHTML = "Game Over";
                 gameOver = true;
             }
-            //console.log("BOX: " + boxX1 + ", " + boxX2 + "Coin: " + coinX1 + ", " + coinX4);
-            else if(boxX1> coinX1 && coinX4 > boxX2 && Math.round(coinY1 * 1000)/1000  == -0.137)
-            {
-                console.log("SCORE" );
-                coinTransDown = -0.1;
-                gl.useProgram(coinShader);
-                gl.uniform1f( gl.getUniformLocation( coinShader, "ty"), coinTransDown );
-                score += 1;
-                document.getElementById("score").innerHTML = score;
-            }
+
         }
 
-        //Translate coin downward
-        coinTransDown += -0.005;
-        gl.useProgram(coinShader);
-        gl.uniform1f( gl.getUniformLocation( coinShader, "ty"), coinTransDown );
+        //Move cone
+        else
+        {        
+            //Checks Y coordinates of coin to randomize x axis randomly
+            console.log(coneTransDown);
 
-        // //If the coin goes off the screen, game is over
-        if(coinTransDown <= -3.5)
-        {
-            document.getElementById("gameover").innerHTML = "Game Over";
-            gameOver = true;
+            if (Math.round(coneTransDown * 1000)/1000  == -0.405 || Math.round(coneTransDown * 1000)/1000  == -1.205 || Math.round(coneTransDown * 1000)/1000  == -1.640)
+            {
+                coneTransX = Math.random() * (1.3 - -1.3) + -1.3;
+                gl.useProgram(trafficConeShader);
+                gl.uniform1f( gl.getUniformLocation( trafficConeShader, "tx"), coneTransX);
+            }
+
+            //If the coins Y coords match the box's Y coords
+            if(coneY1 <= boxY1 && coneY2 >= boxY2)
+            {
+                if((coneX1>=boxX1 && coneX4<=boxX1) || (coneX1>=boxX2 && coneX4<=boxX2))
+                {
+                    document.getElementById("gameover").innerHTML = "Game Over";
+                    gameOver = true;
+                }
+                // console.log("BOX: " + boxX1 + ", " + boxX2 + "Coin: " + coneX1 + ", " + coneX4);
+
+                else if(boxX1> coneX1 && coneX4 > boxX2 && Math.round(coneY1 * 1000)/1000  == -0.105)
+                {
+                    document.getElementById("gameover").innerHTML = "Game Over";
+                    gameOver = true;
+                }
+            }
+        
+                //Translate coin downward
+            coneTransDown += -0.005;
+            gl.useProgram(trafficConeShader);
+            gl.uniform1f( gl.getUniformLocation( trafficConeShader, "ty"), coneTransDown );
+        
+            // //If the coin goes off the screen, game is over
+            if(coneTransDown <= -3.5)
+            {
+                coneTransDown = -0.1;
+                displayedShape = shape[Math.floor(Math.random() * shape.length)];
+            }
         }
 
         //redraw box
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
         gl.useProgram(boxShader);
-        gl.bindBuffer(gl.ARRAY_BUFFER,boxtextureVertexbuffer);
-        gl.vertexAttribPointer( boxtextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
 
         gl.bindBuffer(gl.ARRAY_BUFFER, boxverticesBuffer);
         gl.vertexAttribPointer( boxvertexPosition, 4, gl.FLOAT, false, 0, 0 );
@@ -894,22 +926,29 @@ function render()
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxindexBuffer);
         gl.bindBuffer(gl.ARRAY_BUFFER, boxnormalsBuffer);
         gl.vertexAttribPointer( boxvertexNormal, 3, gl.FLOAT, false, 0, 0 );
+        
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, boxTexture);
         gl.uniform1i(gl.getUniformLocation(boxShader, "texMap0"), 0);
-        gl.drawElements( gl.TRIANGLES, boxTriangles*3 , gl.UNSIGNED_SHORT, 0 );
+        gl.bindBuffer(gl.ARRAY_BUFFER,boxtextureVertexbuffer);
+        gl.vertexAttribPointer( boxtextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
+
+        initLighting(boxShader);
+        gl.drawElements( gl.TRIANGLES, boxIndexList.length , gl.UNSIGNED_SHORT, 0 );
         
         gl.useProgram(coinShader);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER,cointextureVertexbuffer);
-        gl.vertexAttribPointer( cointextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
 
         gl.bindBuffer(gl.ARRAY_BUFFER, coinverticesBuffer);
         gl.vertexAttribPointer( coinvertexPosition, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(coinvertexPosition);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coinindexBuffer);
+        gl.bindBuffer( gl.ARRAY_BUFFER, colorBuffer );
+        gl.vertexAttribPointer( coinColor, 4, gl.FLOAT, false, 0, 0 );
         gl.bindBuffer(gl.ARRAY_BUFFER, coinnormalsBuffer);
         gl.vertexAttribPointer( coinvertexNormal, 3, gl.FLOAT, false, 0, 0 );
-        gl.uniform1i(gl.getUniformLocation(coinShader, "texMap0"), 0);
-        gl.drawElements( gl.TRIANGLES, boxTriangles*3, gl.UNSIGNED_SHORT, 0 );
+
+        initLighting(coinShader);
+        gl.drawElements( gl.TRIANGLES, coinIndexList.length, gl.UNSIGNED_SHORT, 0 );
 
         gl.useProgram(trafficConeShader);
 
@@ -919,7 +958,14 @@ function render()
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, trafficConeindexBuffer);
         gl.bindBuffer(gl.ARRAY_BUFFER, trafficConenormalsBuffer);
         gl.vertexAttribPointer( trafficConevertexNormal, 3, gl.FLOAT, false, 0, 0 );
-        gl.drawElements( gl.TRIANGLES, boxTriangles*3, gl.UNSIGNED_SHORT, 0 );
+
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, coneTexture);
+        gl.uniform1i(gl.getUniformLocation(trafficConeShader, "texMap0"), 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER,conetextureVertexbuffer);
+        gl.vertexAttribPointer( conetextureCoordinate, 2, gl.FLOAT, false, 0, 0 );
+        initLighting(trafficConeShader);
+        gl.drawElements( gl.TRIANGLES, trafficConeIndexList.length, gl.UNSIGNED_SHORT, 0 );
 
         requestAnimationFrame( render ); 
     }
