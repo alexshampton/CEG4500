@@ -204,7 +204,7 @@ function initGL() {
     coinColors = [
 
         // Front face
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
         vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
         vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
         vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
@@ -214,20 +214,20 @@ function initGL() {
         vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
 
         // Back face
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0),
-        vec4(1.0, 223.0 / 255.0, 0.0, 1.0)
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0),
+        vec4(1.0, 220.0 / 255.0, 0.0, 1.0)
     ];
 
 
     coinIndexList = [
         //Front face
-        0, 7, 5,
+        0, 7, 6,
         0, 6, 5,
         0, 5, 4,
         0, 4, 1,
@@ -255,7 +255,15 @@ function initGL() {
         10, 3, 11,
         2, 3, 10,
         11, 4, 12,
-        3, 4, 11
+        3, 4, 11,
+
+        //Top
+        0, 9, 8,
+        0, 1, 9,
+
+        //Bottom
+        5, 12, 13,
+        5, 4, 12
     ];
 
     coinTraingles = coinIndexList.length / 3;
@@ -523,6 +531,9 @@ function initCoin() {
     gl.uniform1f(gl.getUniformLocation(coinShader, "sx"), sx);
     gl.uniform1f(gl.getUniformLocation(coinShader, "sy"), sy);
 
+    numVertices = coinVerticies.length;
+    numTriangles = coinIndexList.length / 3;
+
     var faceNormals = getFaceNormals(coinVerticies, coinIndexList, numTriangles);
     var coinvertexNormals = getVertexNormals(coinVerticies, coinIndexList, faceNormals, numVertices, numTriangles);
 
@@ -538,13 +549,13 @@ function initCoin() {
     gl.vertexAttribPointer(coinvertexPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(coinvertexPosition);
 
-    colorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(coinColors), gl.STATIC_DRAW);
+    // colorBuffer = gl.createBuffer();
+    // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    // gl.bufferData(gl.ARRAY_BUFFER, flatten(coinColors), gl.STATIC_DRAW);
 
-    coinColor = gl.getAttribLocation(coinShader, "myColor");
-    gl.vertexAttribPointer(coinColor, 4, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(coinColor);
+    // coinColor = gl.getAttribLocation(coinShader, "myColor");
+    // gl.vertexAttribPointer(coinColor, 4, gl.FLOAT, false, 0, 0);
+    // gl.enableVertexAttribArray(coinColor);
 
     coinnormalsBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, coinnormalsBuffer);
@@ -555,6 +566,14 @@ function initCoin() {
     gl.enableVertexAttribArray(coinvertexNormal);
 
     initLighting(coinShader);
+
+    colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(coinColors), gl.STATIC_DRAW);
+
+    coinColor = gl.getAttribLocation(coinShader, "myColor");
+    gl.vertexAttribPointer(coinColor, 4, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(coinColor);
 
 }
 
@@ -591,8 +610,8 @@ function initCone() {
     };
     newImage.src = url;
 
-    numVertices = boxVerticies.length;
-    numTriangles = boxIndexList.length / 3;
+    numVertices = trafficConeVerticies.length;
+    numTriangles = trafficConeIndexList.length / 3;
 
     var faceNormals = getFaceNormals(trafficConeVerticies, trafficConeIndexList, numTriangles);
     trafficConevertexNormals = getVertexNormals(trafficConeVerticies, trafficConeIndexList, faceNormals, numVertices, numTriangles);
@@ -630,7 +649,7 @@ function initCone() {
 
 //Initialize lighting
 function initLighting(shader) {
-    var eye = vec3(-10.0, 30.1, -200);
+    var eye = vec3(-50.0, 40.1, -200);
     var at = vec3(0.0, 1.0, 0.0);
     var vup = vec3(0.0, 0.1, 0.0);
 
@@ -726,60 +745,32 @@ function initLighting(shader) {
         0.0];
 
     gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projection"), false, P_persp);
+    gl.uniform1f(gl.getUniformLocation(shader, "alpha"), 10.0);
 
     if (light1Flag == 1) {
         gl.uniform3f(gl.getUniformLocation(shader, "ka"), 0.5, 0.5, 0.5);
         gl.uniform3f(gl.getUniformLocation(shader, "kd"), 0.5, 0.5, 0.5);
+        gl.uniform3f(gl.getUniformLocation(shader, "ks"), 0.4, 0.4, 0.4);
 
-        if (specularFlag == 0) {
-            gl.uniform3f(gl.getUniformLocation(shader, "ks"), 0.0, 0.0, 0.0);
-            gl.uniform3f(gl.getUniformLocation(shader, "Is"), 0.0, 0.0, 0.0);
-        }
-        else {
-            gl.uniform3f(gl.getUniformLocation(shader, "ks"), 0.5, 0.5, 0.5);
-            gl.uniform3f(gl.getUniformLocation(shader, "Is"), 0.8, 0.8, 0.8);
-        }
-
-
-        gl.uniform3f(gl.getUniformLocation(shader, "Ia"), 0.4, 0.4, 0.4);
+        gl.uniform3f(gl.getUniformLocation(shader, "Is"), 1.0, 1.0, 1.0);
+        gl.uniform3f(gl.getUniformLocation(shader, "Ia"), 1.0, 1.0, 1.0);
         gl.uniform3f(gl.getUniformLocation(shader, "Id"), 1.0, 1.0, 1.0);
 
-        gl.uniform3f(gl.getUniformLocation(shader, "p0"), 100.0, 100.0, 0.0);
+        gl.uniform3f(gl.getUniformLocation(shader, "p0"), 10.0, 1.0, 0.0);
 
-        gl.uniform1f(gl.getUniformLocation(shader, "alpha"), 10.0);
+        // gl.uniform1f(gl.getUniformLocation(shader, "alpha"), 10.0);
     }
 
-    else {
-        gl.uniform3f(gl.getUniformLocation(shader, "ka"), 0.0, 0.0, 0.0);
-        gl.uniform3f(gl.getUniformLocation(shader, "kd"), 0.0, 0.0, 0.0);
-        gl.uniform3f(gl.getUniformLocation(shader, "ks"), 0.0, 0.0, 0.0);
-
-
-        gl.uniform3f(gl.getUniformLocation(shader, "Ia"), 0.0, 0.0, 0.0);
-        gl.uniform3f(gl.getUniformLocation(shader, "Id"), 0.0, 0.0, 0.0);
-        gl.uniform3f(gl.getUniformLocation(shader, "Is"), 0.0, 0.0, 0.0);
-
-        gl.uniform3f(gl.getUniformLocation(shader, "p0"), 0.0, 0.0, 10.0);
-
-        gl.uniform1f(gl.getUniformLocation(shader, "alpha"), 10.0);
-    }
 
     if (light2Flag == 1) {
         gl.uniform3f(gl.getUniformLocation(shader, "ka2"), 0.5, 0.5, 0.5);
         gl.uniform3f(gl.getUniformLocation(shader, "kd2"), 0.5, 0.5, 0.5);
+        gl.uniform3f(gl.getUniformLocation(shader, "ks2"), 1, 1, 1);
 
-        if (specularFlag == 0) {
-            gl.uniform3f(gl.getUniformLocation(shader, "ks2"), 0.0, 0.0, 0.0);
-            gl.uniform3f(gl.getUniformLocation(shader, "Is2"), 0.0, 0.0, 0.0);
-        }
-        else {
-            gl.uniform3f(gl.getUniformLocation(shader, "ks2"), 1, 1, 1);
-            gl.uniform3f(gl.getUniformLocation(shader, "Is2"), 1, 1, 1);
-        }
-
+        gl.uniform3f(gl.getUniformLocation(shader, "Is2"), 1, 1, 1);
         gl.uniform3f(gl.getUniformLocation(shader, "Ia2"), 0.4, 0.4, 0.4);
         gl.uniform3f(gl.getUniformLocation(shader, "Id2"), 1.0, 1.0, 1.0);
-        gl.uniform3f(gl.getUniformLocation(shader, "lightDirection2"), -100.0, 0.0, 0.0);
+        gl.uniform3f(gl.getUniformLocation(shader, "lightDirection2"), 0.0, 1.0, -1.0);
     }
     else {
         gl.uniform3f(gl.getUniformLocation(shader, "ka2"), 0.0, 0.0, 0.0);
@@ -880,14 +871,17 @@ function moveX(direction) {
 
 //Moves square up when spacebar is pressed
 function moveShapeByKey(event) {
-    var keyAscii = event.keyCode;
-    if (keyAscii == 65) //A
-    {
-        moveX(1);
-    }
-    else if (keyAscii == 68) //D
-    {
-        moveX(-1);
+    if (!gameOver) {
+
+        var keyAscii = event.keyCode;
+        if (keyAscii == 65) //A
+        {
+            moveX(1);
+        }
+        else if (keyAscii == 68) //D
+        {
+            moveX(-1);
+        }
     }
 }
 
@@ -948,7 +942,7 @@ function render() {
     gl.drawElements(gl.TRIANGLES, trafficConeIndexList.length, gl.UNSIGNED_SHORT, 0);
 
     requestAnimationFrame(render);
-    
+
     //if game is over continue moving shapes
     if (gameOver == false) {
 
@@ -970,6 +964,7 @@ function render() {
         var coneX1 = 0.15 + coneTransX;
         var coneX4 = -0.15 + coneTransX;
 
+        console.log(coinY1, coinY2 + "\n" + boxY1, boxY2);
         //move coin
         if (displayedShape == "coin") {
             //Checks Y coordinates of coin to randomize x axis randomly
@@ -996,12 +991,16 @@ function render() {
                     score += 1;
                     document.getElementById("score").innerHTML = score;
                     displayedShape = shape[Math.floor(Math.random() * shape.length)];
+                    beta = 0.011;
                 }
             }
 
             //Translate coin downward
-            coinTransDown += -0.005;
             gl.useProgram(coinShader);
+            beta += 0.011;
+            gl.uniform1f(gl.getUniformLocation(coinShader, "beta"), beta);
+
+            coinTransDown += -0.005;
             gl.uniform1f(gl.getUniformLocation(coinShader, "ty"), coinTransDown);
 
             // //If the coin goes off the screen, game is over
@@ -1015,8 +1014,6 @@ function render() {
         //Move cone
         else {
             //Checks Y coordinates of coin to randomize x axis randomly
-            console.log(coneTransDown);
-
             if (Math.round(coneTransDown * 1000) / 1000 == -0.405 || Math.round(coneTransDown * 1000) / 1000 == -1.205 || Math.round(coneTransDown * 1000) / 1000 == -1.640) {
                 coneTransX = Math.random() * (1.3 - -1.3) + -1.3;
                 gl.useProgram(trafficConeShader);
@@ -1042,6 +1039,7 @@ function render() {
             coneTransDown += -0.005;
             gl.useProgram(trafficConeShader);
             gl.uniform1f(gl.getUniformLocation(trafficConeShader, "ty"), coneTransDown);
+
 
             // //If the cone goes off the screen, reset the translation value and choose new shape to translate
             if (coneTransDown <= -3.5) {
