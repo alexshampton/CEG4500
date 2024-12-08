@@ -964,7 +964,6 @@ function render() {
         var coneX1 = 0.15 + coneTransX;
         var coneX4 = -0.15 + coneTransX;
 
-        console.log(coinY1, coinY2 + "\n" + boxY1, boxY2);
         //move coin
         if (displayedShape == "coin") {
             //Checks Y coordinates of coin to randomize x axis randomly
@@ -984,7 +983,6 @@ function render() {
 
                 //If the coin gets inside the box without hitting the sides, increase the score
                 else if (boxX1 > coinX1 && coinX4 > boxX2 && Math.round(coinY1 * 1000) / 1000 == -0.137) {
-                    console.log("SCORE");
                     coinTransDown = -0.1;
                     gl.useProgram(coinShader);
                     gl.uniform1f(gl.getUniformLocation(coinShader, "ty"), coinTransDown);
